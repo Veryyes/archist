@@ -14,6 +14,7 @@ import qiling.const
 
 import archist.arch
 
+
 # A8086
 A8086 = archist.arch.Arch(
     name = "A8086",
@@ -242,9 +243,9 @@ X86 = archist.arch.Arch(
 # X8664
 X8664 = archist.arch.Arch(
     name = "X8664",
-    ks = -1,
-    cs = -1,
-    uc = -1,
+    ks = keystone.KS_ARCH_X86,
+    cs = capstone.CS_ARCH_X86,
+    uc = unicorn.UC_ARCH_X86,
     ql = qiling.const.QL_ARCH.X8664
 )
 
@@ -256,3 +257,6 @@ XCORE = archist.arch.Arch(
     uc = -1,
     ql = None
 )
+
+
+ALL_ARCHES = [A8086,ALL,ARM,ARM64,BPF,CORTEX_M,EVM,HEXAGON,M680X,M68K,MAX,MIPS,MOS65XX,PPC,RISCV,RISCV64,S390X,SH,SPARC,SYSTEMZ,SYSZ,TMS320C64X,TRICORE,WASM,X86,X8664,XCORE]

@@ -24,3 +24,5 @@ import archist.arch
     ql = {{ a.ql }}
 )
 {% endfor %}
+
+ALL_ARCHES = [{{ arches | map(attribute="name") | join(",") }}]

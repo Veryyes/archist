@@ -37,11 +37,24 @@ def generate_arches():
     arches = list()
     for name in arch_names:
         a = dict()
+
+
         a['name'] = name
         a['ks'] = f"keystone.KS_ARCH_{name}" if hasattr(keystone, f"KS_ARCH_{name}") else "-1"
         a['cs'] = f"capstone.CS_ARCH_{name}" if hasattr(capstone, f"CS_ARCH_{name}") else "-1"
         a['uc'] = f"unicorn.UC_ARCH_{name}" if hasattr(unicorn, f"UC_ARCH_{name}") else "-1"
         a['ql'] = f"qiling.const.QL_ARCH.{name}" if hasattr(qiling.const.QL_ARCH, name) else "None"
+
+        # Sigh, special cases (or at least until I have more time to work on this)...
+        # X86 64bit is selected by a mode. Qiling is the only one without the concept of a "mode"
+        # So, we just set X8664 to X86, except for qiling and adjust the mode accordingly 
+        # TODO set mode
+        if name == "X8664":
+            name = "X86"
+            a['ks'] = f"keystone.KS_ARCH_{name}" if hasattr(keystone, f"KS_ARCH_{name}") else "-1"
+            a['cs'] = f"capstone.CS_ARCH_{name}" if hasattr(capstone, f"CS_ARCH_{name}") else "-1"
+            a['uc'] = f"unicorn.UC_ARCH_{name}" if hasattr(unicorn, f"UC_ARCH_{name}") else "-1"
+        
         arches.append(a)
     arches.sort(key = lambda x: x["name"])
 
