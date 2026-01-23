@@ -5,6 +5,7 @@ from qiling.const import QL_OS
 
 from archist import X86, X8664
 
+
 def test_shellcode_emulation() -> None:
     """Test emulating x86 shellcode."""
     # XOR EAX, EAX; INC EAX; NOP

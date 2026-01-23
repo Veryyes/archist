@@ -4,6 +4,7 @@ from keystone import Ks, KS_MODE_32, KS_MODE_64
 
 from archist import X86, X8664
 
+
 def test_assemble_x86_32() -> None:
     """Test assembling x86 32-bit code."""
     ks = Ks(X86.ks, KS_MODE_32)

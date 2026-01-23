@@ -43,3 +43,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/archist"]
+
+[tool.ruff.format]
+exclude = ["src/archist/__init__.py"]

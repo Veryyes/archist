@@ -5,6 +5,7 @@ from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ECX
 
 from archist import X86
 
+
 def test_emulate_x86_inc() -> None:
     """Test emulating x86 INC instruction."""
     # INC ECX (0x41)

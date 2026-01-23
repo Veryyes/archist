@@ -4,6 +4,7 @@ from capstone import Cs, CS_MODE_32, CS_MODE_64
 
 from archist import X86, X8664
 
+
 def test_disassemble_x86_32() -> None:
     """Test disassembling x86 32-bit code."""
     # INC ECX; DEC EDX

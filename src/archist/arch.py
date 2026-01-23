@@ -1,8 +1,9 @@
 import pydantic
 import qiling.const
 
+
 class Arch(pydantic.BaseModel):
-    name:str
+    name: str
     ks: int
     cs: int
     uc: int
