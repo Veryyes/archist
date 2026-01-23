@@ -23,7 +23,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = []
+dependencies = [
+    "keystone-engine",
+    "capstone",
+    "unicorn",
+    "qiling",
+    "pydantic"
+]
 
 [project.optional-dependencies]
 dev = [
