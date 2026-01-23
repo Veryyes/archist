@@ -33,6 +33,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "Jinja2",
     "pytest",
     "pytest-cov",
     "ruff",
