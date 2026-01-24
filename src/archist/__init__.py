@@ -18,12 +18,12 @@ import archist.modes
 ##########
 # ENDIAN #
 ##########
-assert capstone.CS_MODE_BIG_ENDIAN == keystone.KS_MODE_BIG_ENDIAN == unicorn.UC_MODE_BIG_ENDIAN
+# All the consts for little endian are the same (but not big endian)
 BIG_ENDIAN = archist.core.Endian(
     name = "big",
     ks = keystone.KS_MODE_BIG_ENDIAN,
-    cs = keystone.KS_MODE_BIG_ENDIAN,
-    uc = keystone.KS_MODE_BIG_ENDIAN,
+    cs = capstone.CS_MODE_BIG_ENDIAN,
+    uc = unicorn.UC_MODE_BIG_ENDIAN,
     ql = qiling.const.QL_ENDIAN.EB
 )
 
