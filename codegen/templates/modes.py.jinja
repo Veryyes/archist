@@ -1,0 +1,18 @@
+import capstone
+import keystone
+import unicorn
+
+import archist.core
+
+###############################
+# ARCHITECTURE MODES/VARIANTS #
+###############################
+{% for m in modes %}
+{{ m.name }} = archist.core.Mode(
+    name = "{{ m.name }}",
+    ks = {{ m.ks }},
+    cs = {{ m.cs }},
+    uc = {{ m.uc }}
+)
+{% endfor %}
+ALL_MODES = [{{ modes | map(attribute="name") | join(", ") }}]

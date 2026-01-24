@@ -12,17 +12,44 @@ import keystone
 import unicorn
 import qiling.const
 
-import archist.arch
+import archist.core
+import archist.modes
 
+##########
+# ENDIAN #
+##########
+assert capstone.CS_MODE_BIG_ENDIAN == keystone.KS_MODE_BIG_ENDIAN == unicorn.UC_MODE_BIG_ENDIAN
+BIG_ENDIAN = archist.core.Endian(
+    name = "big",
+    ks = keystone.KS_MODE_BIG_ENDIAN,
+    cs = keystone.KS_MODE_BIG_ENDIAN,
+    uc = keystone.KS_MODE_BIG_ENDIAN,
+    ql = qiling.const.QL_ENDIAN.EB
+)
+
+assert capstone.CS_MODE_LITTLE_ENDIAN == keystone.KS_MODE_LITTLE_ENDIAN == unicorn.UC_MODE_LITTLE_ENDIAN
+LITTLE_ENDIAN = archist.core.Endian(
+    name = "little",
+    ks = keystone.KS_MODE_LITTLE_ENDIAN,
+    cs = keystone.KS_MODE_LITTLE_ENDIAN,
+    uc = keystone.KS_MODE_LITTLE_ENDIAN,
+    ql = qiling.const.QL_ENDIAN.EL
+)
+
+#################
+# ARCHITECTURES #
+#################
 {% for a in arches %}
 # {{ a.name }}
-{{ a.name }} = archist.arch.Arch(
+{{ a.name }} = archist.core.Arch(
     name = "{{ a.name }}",
     ks = {{ a.ks }},
     cs = {{ a.cs }},
     uc = {{ a.uc }},
-    ql = {{ a.ql }}
+    ql = {{ a.ql }},
+    {% if a.modes | length > 0 %}
+    mode = {m.name: m for m in [{% for mt in a.modes %}archist.modes.{{ mt }}{% if not loop.last %}, {% endif %}{% endfor %}]}
+    {% endif %}
 )
 {% endfor %}
-
-ALL_ARCHES = [{{ arches | map(attribute="name") | join(",") }}]
+ALL_ARCHES = [{{ arches | map(attribute="name") | join(", ") }}]
