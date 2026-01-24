@@ -45,4 +45,4 @@ dev = [
 packages = ["src/archist"]
 
 [tool.ruff.format]
-exclude = ["src/archist/__init__.py"]
+exclude = ["src/archist/__init__.py", "src/archist/modes.py"]
