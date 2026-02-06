@@ -27,6 +27,7 @@ BIG_ENDIAN = archist.core.Endian(
     ql = qiling.const.QL_ENDIAN.EB
 )
 
+# Little Endian happens to be the same const across all of these libs
 assert capstone.CS_MODE_LITTLE_ENDIAN == keystone.KS_MODE_LITTLE_ENDIAN == unicorn.UC_MODE_LITTLE_ENDIAN
 LITTLE_ENDIAN = archist.core.Endian(
     name = "little",
@@ -40,16 +41,14 @@ LITTLE_ENDIAN = archist.core.Endian(
 # ARCHITECTURES #
 #################
 {% for a in arches %}
-# {{ a.name }}
-{{ a.name }} = archist.core.Arch(
-    name = "{{ a.name }}",
-    ks = {{ a.ks }},
-    cs = {{ a.cs }},
-    uc = {{ a.uc }},
-    ql = {{ a.ql }},
-    {% if a.modes | length > 0 %}
-    mode = {m.name: m for m in [{% for mt in a.modes %}archist.modes.{{ mt }}{% if not loop.last %}, {% endif %}{% endfor %}]}
-    {% endif %}
-)
+class {{ a.name }}(archist.core.Arch):{% if a.modes | length > 0%}
+    class mode:
+        {% for mt in a.modes %}{{ mt }} = archist.modes.{{ mt }}
+        {% endfor %}{% endif %}
+    name = "{{ a.name }}"
+    ks = {{ a.ks }}
+    cs = {{ a.cs }}
+    uc = {{ a.uc }}
+    ql = {{ a.ql }}
 {% endfor %}
 ALL_ARCHES = [{{ arches | map(attribute="name") | join(", ") }}]

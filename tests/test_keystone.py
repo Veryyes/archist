@@ -1,13 +1,13 @@
 """Tests for keystone-engine basic usage."""
 
-from keystone import Ks, KS_MODE_32, KS_MODE_64
+from keystone import Ks
 
 from archist import X86, X8664
 
 
 def test_assemble_x86_32() -> None:
     """Test assembling x86 32-bit code."""
-    ks = Ks(X86.ks, KS_MODE_32)
+    ks = Ks(X86.ks, X86.mode._32.ks)
     encoding, count = ks.asm("INC ECX; DEC EDX")
 
     assert encoding is not None
@@ -17,7 +17,7 @@ def test_assemble_x86_32() -> None:
 
 def test_assemble_x86_64() -> None:
     """Test assembling x86 64-bit code."""
-    ks = Ks(X8664.ks, KS_MODE_64)
+    ks = Ks(X8664.ks, X8664.mode._64.ks)
     encoding, count = ks.asm("NOP; RET")
 
     assert encoding is not None
@@ -27,7 +27,7 @@ def test_assemble_x86_64() -> None:
 
 def test_assemble_mov() -> None:
     """Test assembling MOV instruction."""
-    ks = Ks(X86.ks, KS_MODE_32)
+    ks = Ks(X86.ks, X86.mode._32.ks)
     encoding, count = ks.asm("MOV EAX, 0x1234")
 
     assert encoding is not None

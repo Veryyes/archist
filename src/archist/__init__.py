@@ -27,6 +27,7 @@ BIG_ENDIAN = archist.core.Endian(
     ql = qiling.const.QL_ENDIAN.EB
 )
 
+# Little Endian happens to be the same const across all of these libs
 assert capstone.CS_MODE_LITTLE_ENDIAN == keystone.KS_MODE_LITTLE_ENDIAN == unicorn.UC_MODE_LITTLE_ENDIAN
 LITTLE_ENDIAN = archist.core.Endian(
     name = "little",
@@ -40,304 +41,294 @@ LITTLE_ENDIAN = archist.core.Endian(
 # ARCHITECTURES #
 #################
 
-# A8086
-A8086 = archist.core.Arch(
-    name = "A8086",
-    ks = None,
-    cs = None,
-    uc = None,
-    ql = qiling.const.QL_ARCH.A8086,
-    
-)
+class A8086(archist.core.Arch):
+    name = "A8086"
+    ks = None
+    cs = None
+    uc = None
+    ql = qiling.const.QL_ARCH.A8086
 
-# ALL
-ALL = archist.core.Arch(
-    name = "ALL",
-    ks = None,
-    cs = capstone.CS_ARCH_ALL,
-    uc = None,
-    ql = None,
-    
-)
+class ALL(archist.core.Arch):
+    name = "ALL"
+    ks = None
+    cs = capstone.CS_ARCH_ALL
+    uc = None
+    ql = None
 
-# ARM
-ARM = archist.core.Arch(
-    name = "ARM",
-    ks = keystone.KS_ARCH_ARM,
-    cs = capstone.CS_ARCH_ARM,
-    uc = unicorn.UC_ARCH_ARM,
-    ql = qiling.const.QL_ARCH.ARM,
-    
-    mode = {m.name: m for m in [archist.modes.ARM, archist.modes.ARM1176, archist.modes.ARM926, archist.modes.ARM946, archist.modes.ARMBE8, archist.modes.THUMB, archist.modes.MCLASS, archist.modes.V8]}
-    
-)
+class ARM(archist.core.Arch):
+    class mode:
+        ARM = archist.modes.ARM
+        ARM1176 = archist.modes.ARM1176
+        ARM926 = archist.modes.ARM926
+        ARM946 = archist.modes.ARM946
+        ARMBE8 = archist.modes.ARMBE8
+        THUMB = archist.modes.THUMB
+        MCLASS = archist.modes.MCLASS
+        V8 = archist.modes.V8
+        
+    name = "ARM"
+    ks = keystone.KS_ARCH_ARM
+    cs = capstone.CS_ARCH_ARM
+    uc = unicorn.UC_ARCH_ARM
+    ql = qiling.const.QL_ARCH.ARM
 
-# ARM64
-ARM64 = archist.core.Arch(
-    name = "ARM64",
-    ks = keystone.KS_ARCH_ARM64,
-    cs = capstone.CS_ARCH_ARM64,
-    uc = unicorn.UC_ARCH_ARM64,
-    ql = qiling.const.QL_ARCH.ARM64,
-    
-    mode = {m.name: m for m in [archist.modes.ARM]}
-    
-)
+class ARM64(archist.core.Arch):
+    class mode:
+        ARM = archist.modes.ARM
+        
+    name = "ARM64"
+    ks = keystone.KS_ARCH_ARM64
+    cs = capstone.CS_ARCH_ARM64
+    uc = unicorn.UC_ARCH_ARM64
+    ql = qiling.const.QL_ARCH.ARM64
 
-# BPF
-BPF = archist.core.Arch(
-    name = "BPF",
-    ks = None,
-    cs = capstone.CS_ARCH_BPF,
-    uc = None,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.BPF_CLASSIC, archist.modes.BPF_EXTENDED]}
-    
-)
+class BPF(archist.core.Arch):
+    class mode:
+        BPF_CLASSIC = archist.modes.BPF_CLASSIC
+        BPF_EXTENDED = archist.modes.BPF_EXTENDED
+        
+    name = "BPF"
+    ks = None
+    cs = capstone.CS_ARCH_BPF
+    uc = None
+    ql = None
 
-# CORTEX_M
-CORTEX_M = archist.core.Arch(
-    name = "CORTEX_M",
-    ks = None,
-    cs = None,
-    uc = None,
-    ql = qiling.const.QL_ARCH.CORTEX_M,
-    
-)
+class CORTEX_M(archist.core.Arch):
+    name = "CORTEX_M"
+    ks = None
+    cs = None
+    uc = None
+    ql = qiling.const.QL_ARCH.CORTEX_M
 
-# EVM
-EVM = archist.core.Arch(
-    name = "EVM",
-    ks = keystone.KS_ARCH_EVM,
-    cs = capstone.CS_ARCH_EVM,
-    uc = None,
-    ql = qiling.const.QL_ARCH.EVM,
-    
-)
+class EVM(archist.core.Arch):
+    name = "EVM"
+    ks = keystone.KS_ARCH_EVM
+    cs = capstone.CS_ARCH_EVM
+    uc = None
+    ql = qiling.const.QL_ARCH.EVM
 
-# HEXAGON
-HEXAGON = archist.core.Arch(
-    name = "HEXAGON",
-    ks = keystone.KS_ARCH_HEXAGON,
-    cs = None,
-    uc = None,
-    ql = None,
-    
-)
+class HEXAGON(archist.core.Arch):
+    name = "HEXAGON"
+    ks = keystone.KS_ARCH_HEXAGON
+    cs = None
+    uc = None
+    ql = None
 
-# M680X
-M680X = archist.core.Arch(
-    name = "M680X",
-    ks = None,
-    cs = capstone.CS_ARCH_M680X,
-    uc = None,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.M680X_6301, archist.modes.M680X_6309, archist.modes.M680X_6800, archist.modes.M680X_6801, archist.modes.M680X_6805, archist.modes.M680X_6808, archist.modes.M680X_6809, archist.modes.M680X_6811, archist.modes.M680X_CPU12, archist.modes.M680X_HCS08]}
-    
-)
+class M680X(archist.core.Arch):
+    class mode:
+        M680X_6301 = archist.modes.M680X_6301
+        M680X_6309 = archist.modes.M680X_6309
+        M680X_6800 = archist.modes.M680X_6800
+        M680X_6801 = archist.modes.M680X_6801
+        M680X_6805 = archist.modes.M680X_6805
+        M680X_6808 = archist.modes.M680X_6808
+        M680X_6809 = archist.modes.M680X_6809
+        M680X_6811 = archist.modes.M680X_6811
+        M680X_CPU12 = archist.modes.M680X_CPU12
+        M680X_HCS08 = archist.modes.M680X_HCS08
+        
+    name = "M680X"
+    ks = None
+    cs = capstone.CS_ARCH_M680X
+    uc = None
+    ql = None
 
-# M68K
-M68K = archist.core.Arch(
-    name = "M68K",
-    ks = None,
-    cs = capstone.CS_ARCH_M68K,
-    uc = unicorn.UC_ARCH_M68K,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.M68K_000, archist.modes.M68K_010, archist.modes.M68K_020, archist.modes.M68K_030, archist.modes.M68K_040, archist.modes.M68K_060]}
-    
-)
+class M68K(archist.core.Arch):
+    class mode:
+        M68K_000 = archist.modes.M68K_000
+        M68K_010 = archist.modes.M68K_010
+        M68K_020 = archist.modes.M68K_020
+        M68K_030 = archist.modes.M68K_030
+        M68K_040 = archist.modes.M68K_040
+        M68K_060 = archist.modes.M68K_060
+        
+    name = "M68K"
+    ks = None
+    cs = capstone.CS_ARCH_M68K
+    uc = unicorn.UC_ARCH_M68K
+    ql = None
 
-# MAX
-MAX = archist.core.Arch(
-    name = "MAX",
-    ks = keystone.KS_ARCH_MAX,
-    cs = capstone.CS_ARCH_MAX,
-    uc = unicorn.UC_ARCH_MAX,
-    ql = None,
-    
-)
+class MAX(archist.core.Arch):
+    name = "MAX"
+    ks = keystone.KS_ARCH_MAX
+    cs = capstone.CS_ARCH_MAX
+    uc = unicorn.UC_ARCH_MAX
+    ql = None
 
-# MIPS
-MIPS = archist.core.Arch(
-    name = "MIPS",
-    ks = keystone.KS_ARCH_MIPS,
-    cs = capstone.CS_ARCH_MIPS,
-    uc = unicorn.UC_ARCH_MIPS,
-    ql = qiling.const.QL_ARCH.MIPS,
-    
-    mode = {m.name: m for m in [archist.modes.MIPS2, archist.modes.MIPS3, archist.modes.MIPS32, archist.modes.MIPS32R6, archist.modes.MIPS64, archist.modes.MICRO]}
-    
-)
+class MIPS(archist.core.Arch):
+    class mode:
+        MIPS2 = archist.modes.MIPS2
+        MIPS3 = archist.modes.MIPS3
+        MIPS32 = archist.modes.MIPS32
+        MIPS32R6 = archist.modes.MIPS32R6
+        MIPS64 = archist.modes.MIPS64
+        MICRO = archist.modes.MICRO
+        
+    name = "MIPS"
+    ks = keystone.KS_ARCH_MIPS
+    cs = capstone.CS_ARCH_MIPS
+    uc = unicorn.UC_ARCH_MIPS
+    ql = qiling.const.QL_ARCH.MIPS
 
-# MOS65XX
-MOS65XX = archist.core.Arch(
-    name = "MOS65XX",
-    ks = None,
-    cs = capstone.CS_ARCH_MOS65XX,
-    uc = None,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.MOS65XX_6502, archist.modes.MOS65XX_65816, archist.modes.MOS65XX_65816_LONG_M, archist.modes.MOS65XX_65816_LONG_MX, archist.modes.MOS65XX_65816_LONG_X, archist.modes.MOS65XX_65C02, archist.modes.MOS65XX_W65C02]}
-    
-)
+class MOS65XX(archist.core.Arch):
+    class mode:
+        MOS65XX_6502 = archist.modes.MOS65XX_6502
+        MOS65XX_65816 = archist.modes.MOS65XX_65816
+        MOS65XX_65816_LONG_M = archist.modes.MOS65XX_65816_LONG_M
+        MOS65XX_65816_LONG_MX = archist.modes.MOS65XX_65816_LONG_MX
+        MOS65XX_65816_LONG_X = archist.modes.MOS65XX_65816_LONG_X
+        MOS65XX_65C02 = archist.modes.MOS65XX_65C02
+        MOS65XX_W65C02 = archist.modes.MOS65XX_W65C02
+        
+    name = "MOS65XX"
+    ks = None
+    cs = capstone.CS_ARCH_MOS65XX
+    uc = None
+    ql = None
 
-# PPC
-PPC = archist.core.Arch(
-    name = "PPC",
-    ks = keystone.KS_ARCH_PPC,
-    cs = capstone.CS_ARCH_PPC,
-    uc = unicorn.UC_ARCH_PPC,
-    ql = qiling.const.QL_ARCH.PPC,
-    
-    mode = {m.name: m for m in [archist.modes.PPC32, archist.modes.PPC64, archist.modes._64, archist.modes.QPX, archist.modes.SPE, archist.modes.BOOKE, archist.modes.PS]}
-    
-)
+class PPC(archist.core.Arch):
+    class mode:
+        PPC32 = archist.modes.PPC32
+        PPC64 = archist.modes.PPC64
+        _64 = archist.modes._64
+        QPX = archist.modes.QPX
+        SPE = archist.modes.SPE
+        BOOKE = archist.modes.BOOKE
+        PS = archist.modes.PS
+        
+    name = "PPC"
+    ks = keystone.KS_ARCH_PPC
+    cs = capstone.CS_ARCH_PPC
+    uc = unicorn.UC_ARCH_PPC
+    ql = qiling.const.QL_ARCH.PPC
 
-# RISCV
-RISCV = archist.core.Arch(
-    name = "RISCV",
-    ks = None,
-    cs = capstone.CS_ARCH_RISCV,
-    uc = unicorn.UC_ARCH_RISCV,
-    ql = qiling.const.QL_ARCH.RISCV,
-    
-    mode = {m.name: m for m in [archist.modes.RISCV32, archist.modes.RISCV64, archist.modes.RISCVC]}
-    
-)
+class RISCV(archist.core.Arch):
+    class mode:
+        RISCV32 = archist.modes.RISCV32
+        RISCV64 = archist.modes.RISCV64
+        RISCVC = archist.modes.RISCVC
+        
+    name = "RISCV"
+    ks = None
+    cs = capstone.CS_ARCH_RISCV
+    uc = unicorn.UC_ARCH_RISCV
+    ql = qiling.const.QL_ARCH.RISCV
 
-# RISCV64
-RISCV64 = archist.core.Arch(
-    name = "RISCV64",
-    ks = None,
-    cs = None,
-    uc = None,
-    ql = qiling.const.QL_ARCH.RISCV64,
-    
-    mode = {m.name: m for m in [archist.modes.RISCV64]}
-    
-)
+class RISCV64(archist.core.Arch):
+    class mode:
+        RISCV64 = archist.modes.RISCV64
+        
+    name = "RISCV64"
+    ks = None
+    cs = None
+    uc = None
+    ql = qiling.const.QL_ARCH.RISCV64
 
-# S390X
-S390X = archist.core.Arch(
-    name = "S390X",
-    ks = None,
-    cs = None,
-    uc = unicorn.UC_ARCH_S390X,
-    ql = None,
-    
-)
+class S390X(archist.core.Arch):
+    name = "S390X"
+    ks = None
+    cs = None
+    uc = unicorn.UC_ARCH_S390X
+    ql = None
 
-# SH
-SH = archist.core.Arch(
-    name = "SH",
-    ks = None,
-    cs = capstone.CS_ARCH_SH,
-    uc = None,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.SH2, archist.modes.SH2A, archist.modes.SH3, archist.modes.SH4, archist.modes.SH4A, archist.modes.SHDSP, archist.modes.SHFPU]}
-    
-)
+class SH(archist.core.Arch):
+    class mode:
+        SH2 = archist.modes.SH2
+        SH2A = archist.modes.SH2A
+        SH3 = archist.modes.SH3
+        SH4 = archist.modes.SH4
+        SH4A = archist.modes.SH4A
+        SHDSP = archist.modes.SHDSP
+        SHFPU = archist.modes.SHFPU
+        
+    name = "SH"
+    ks = None
+    cs = capstone.CS_ARCH_SH
+    uc = None
+    ql = None
 
-# SPARC
-SPARC = archist.core.Arch(
-    name = "SPARC",
-    ks = keystone.KS_ARCH_SPARC,
-    cs = capstone.CS_ARCH_SPARC,
-    uc = unicorn.UC_ARCH_SPARC,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.SPARC32, archist.modes.SPARC64, archist.modes.V9]}
-    
-)
+class SPARC(archist.core.Arch):
+    class mode:
+        SPARC32 = archist.modes.SPARC32
+        SPARC64 = archist.modes.SPARC64
+        V9 = archist.modes.V9
+        
+    name = "SPARC"
+    ks = keystone.KS_ARCH_SPARC
+    cs = capstone.CS_ARCH_SPARC
+    uc = unicorn.UC_ARCH_SPARC
+    ql = None
 
-# SYSTEMZ
-SYSTEMZ = archist.core.Arch(
-    name = "SYSTEMZ",
-    ks = keystone.KS_ARCH_SYSTEMZ,
-    cs = None,
-    uc = None,
-    ql = None,
-    
-)
+class SYSTEMZ(archist.core.Arch):
+    name = "SYSTEMZ"
+    ks = keystone.KS_ARCH_SYSTEMZ
+    cs = None
+    uc = None
+    ql = None
 
-# SYSZ
-SYSZ = archist.core.Arch(
-    name = "SYSZ",
-    ks = None,
-    cs = capstone.CS_ARCH_SYSZ,
-    uc = None,
-    ql = None,
-    
-)
+class SYSZ(archist.core.Arch):
+    name = "SYSZ"
+    ks = None
+    cs = capstone.CS_ARCH_SYSZ
+    uc = None
+    ql = None
 
-# TMS320C64X
-TMS320C64X = archist.core.Arch(
-    name = "TMS320C64X",
-    ks = None,
-    cs = capstone.CS_ARCH_TMS320C64X,
-    uc = None,
-    ql = None,
-    
-)
+class TMS320C64X(archist.core.Arch):
+    name = "TMS320C64X"
+    ks = None
+    cs = capstone.CS_ARCH_TMS320C64X
+    uc = None
+    ql = None
 
-# TRICORE
-TRICORE = archist.core.Arch(
-    name = "TRICORE",
-    ks = None,
-    cs = capstone.CS_ARCH_TRICORE,
-    uc = unicorn.UC_ARCH_TRICORE,
-    ql = None,
-    
-    mode = {m.name: m for m in [archist.modes.TRICORE_110, archist.modes.TRICORE_120, archist.modes.TRICORE_130, archist.modes.TRICORE_131, archist.modes.TRICORE_160, archist.modes.TRICORE_161, archist.modes.TRICORE_162]}
-    
-)
+class TRICORE(archist.core.Arch):
+    class mode:
+        TRICORE_110 = archist.modes.TRICORE_110
+        TRICORE_120 = archist.modes.TRICORE_120
+        TRICORE_130 = archist.modes.TRICORE_130
+        TRICORE_131 = archist.modes.TRICORE_131
+        TRICORE_160 = archist.modes.TRICORE_160
+        TRICORE_161 = archist.modes.TRICORE_161
+        TRICORE_162 = archist.modes.TRICORE_162
+        
+    name = "TRICORE"
+    ks = None
+    cs = capstone.CS_ARCH_TRICORE
+    uc = unicorn.UC_ARCH_TRICORE
+    ql = None
 
-# WASM
-WASM = archist.core.Arch(
-    name = "WASM",
-    ks = None,
-    cs = capstone.CS_ARCH_WASM,
-    uc = None,
-    ql = None,
-    
-)
+class WASM(archist.core.Arch):
+    name = "WASM"
+    ks = None
+    cs = capstone.CS_ARCH_WASM
+    uc = None
+    ql = None
 
-# X86
-X86 = archist.core.Arch(
-    name = "X86",
-    ks = keystone.KS_ARCH_X86,
-    cs = capstone.CS_ARCH_X86,
-    uc = unicorn.UC_ARCH_X86,
-    ql = qiling.const.QL_ARCH.X86,
-    
-    mode = {m.name: m for m in [archist.modes._16, archist.modes._32]}
-    
-)
+class X86(archist.core.Arch):
+    class mode:
+        _16 = archist.modes._16
+        _32 = archist.modes._32
+        
+    name = "X86"
+    ks = keystone.KS_ARCH_X86
+    cs = capstone.CS_ARCH_X86
+    uc = unicorn.UC_ARCH_X86
+    ql = qiling.const.QL_ARCH.X86
 
-# X8664
-X8664 = archist.core.Arch(
-    name = "X8664",
-    ks = keystone.KS_ARCH_X86,
-    cs = capstone.CS_ARCH_X86,
-    uc = unicorn.UC_ARCH_X86,
-    ql = qiling.const.QL_ARCH.X8664,
-    
-    mode = {m.name: m for m in [archist.modes._64]}
-    
-)
+class X8664(archist.core.Arch):
+    class mode:
+        _64 = archist.modes._64
+        
+    name = "X8664"
+    ks = keystone.KS_ARCH_X86
+    cs = capstone.CS_ARCH_X86
+    uc = unicorn.UC_ARCH_X86
+    ql = qiling.const.QL_ARCH.X8664
 
-# XCORE
-XCORE = archist.core.Arch(
-    name = "XCORE",
-    ks = None,
-    cs = capstone.CS_ARCH_XCORE,
-    uc = None,
-    ql = None,
-    
-)
+class XCORE(archist.core.Arch):
+    name = "XCORE"
+    ks = None
+    cs = capstone.CS_ARCH_XCORE
+    uc = None
+    ql = None
 
 ALL_ARCHES = [A8086, ALL, ARM, ARM64, BPF, CORTEX_M, EVM, HEXAGON, M680X, M68K, MAX, MIPS, MOS65XX, PPC, RISCV, RISCV64, S390X, SH, SPARC, SYSTEMZ, SYSZ, TMS320C64X, TRICORE, WASM, X86, X8664, XCORE]

@@ -1,3 +1,4 @@
+'''Different Modes Collated'''
 import capstone
 import keystone
 import unicorn
