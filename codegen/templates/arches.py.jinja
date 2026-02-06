@@ -10,6 +10,7 @@
 import capstone
 import keystone
 import unicorn
+import unicorn.ppc_const # https://github.com/unicorn-engine/unicorn/pull/2288
 import qiling.const
 
 import archist.core
@@ -41,14 +42,19 @@ LITTLE_ENDIAN = archist.core.Endian(
 # ARCHITECTURES #
 #################
 {% for a in arches %}
-class {{ a.name }}(archist.core.Arch):{% if a.modes | length > 0%}
-    class mode:
-        {% for mt in a.modes %}{{ mt }} = archist.modes.{{ mt }}
-        {% endfor %}{% endif %}
+class {{ a.name }}(archist.core.Arch):
     name = "{{ a.name }}"
     ks = {{ a.ks }}
     cs = {{ a.cs }}
     uc = {{ a.uc }}
     ql = {{ a.ql }}
-{% endfor %}
+{% if a.modes | length > 0 %}
+    class mode:
+        {% for mt in a.modes %}{{ mt }} = archist.modes.{{ mt }}
+        {% endfor %}{% endif %}
+{% if a.registers | length > 0 %}
+    class reg:
+        {% for reg_name, lib_name in a.registers.items() %}{{ reg_name | lower }}={{ lib_name }}
+        {% endfor %}{% endif %}{% endfor %}
+
 ALL_ARCHES = [{{ arches | map(attribute="name") | join(", ") }}]

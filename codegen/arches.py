@@ -11,6 +11,7 @@ import unicorn
 import qiling.const
 
 from util import getattr_regex, non_dunder_members, INT_CONSTS_LIBS
+from regs import generate_registers
 
 
 @dataclasses.dataclass
@@ -29,18 +30,19 @@ class ArchTemplate:
     uc: str
     ql: str
     modes: typing.List[str]
+    registers: typing.List[str]
 
 
-def generate_modes():
+def generate_modes() -> typing.List[ModeTemplate]:
     # Group 1 => Library prefix (UC == Unicorn)
     # Group 2 => Arch name
     # Group 3 => Optional Variant
-    var_pattern = re.compile(r"(\w\w)_MODE_(\w+)(\w+)?")
+    var_pattern = re.compile(r"(\w\w)_MODE_((\w+)(\w+))?")
     all_consts = itertools.chain(
-        *[getattr_regex(lib, var_pattern) for lib in INT_CONSTS_LIBS]
+        *[getattr_regex(lib, var_pattern, group_no=2) for lib in INT_CONSTS_LIBS]
     )
-    # all_consts = list(all_consts)
-    mode_names = set([var.split("_", 2)[2] for var in all_consts])
+
+    mode_names = set(all_consts)
 
     modes: typing.List[ModeTemplate] = list()
     for name in mode_names:
@@ -65,18 +67,17 @@ def generate_modes():
     return modes
 
 
-def generate_arches(modes: typing.List[ModeTemplate]):
+def generate_arches(modes: typing.List[ModeTemplate]) -> typing.List[ArchTemplate]:
     # Group 1 => Library prefix (UC == Unicorn)
     # Group 2 => Arch name
     var_pattern = re.compile(r"(\w\w)_ARCH_(\w+)")
     all_consts = itertools.chain(
-        *[getattr_regex(lib, var_pattern) for lib in INT_CONSTS_LIBS]
+        *[getattr_regex(lib, var_pattern, group_no=2) for lib in INT_CONSTS_LIBS]
     )
 
     # Union of all arches supported by all 4 libaries
     arch_names = set(
-        [var.rsplit("_", 1)[1] for var in all_consts]
-        + list(non_dunder_members(qiling.const.QL_ARCH).keys())
+        list(all_consts) + list(non_dunder_members(qiling.const.QL_ARCH).keys())
     )
 
     arches: typing.List[ArchTemplate] = list()
@@ -96,6 +97,7 @@ def generate_arches(modes: typing.List[ModeTemplate]):
             if hasattr(qiling.const.QL_ARCH, name)
             else "None",
             modes=list(),
+            registers=generate_registers(name),
         )
         for mode in filter(lambda m: a.name in m.name, modes):
             a.modes.append(mode.name)

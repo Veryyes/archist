@@ -1,6 +1,7 @@
 """Utility functions for codegen."""
 
 import re
+import typing
 
 import capstone
 import keystone
@@ -10,8 +11,15 @@ import unicorn
 INT_CONSTS_LIBS = [capstone, keystone, unicorn]
 
 
-def getattr_regex(obj, pattern):
-    return {name: getattr(obj, name) for name in dir(obj) if re.match(pattern, name)}
+def getattr_regex(obj, pattern, group_no: int = 0):
+    var_map: typing.Dict[str, int] = dict()
+    for name in dir(obj):
+        m = re.match(pattern, name)
+        if m is None:
+            continue
+
+        var_map[m.group(group_no)] = getattr(obj, name)
+    return var_map
 
 
 def non_dunder_members(obj):
