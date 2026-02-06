@@ -1,7 +1,6 @@
 """Tests for unicorn-engine basic usage."""
 
 from unicorn import Uc
-# from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ECX
 
 from archist import X86
 

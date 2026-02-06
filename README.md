@@ -12,9 +12,12 @@
 ```
 
 ```python
+# Example Code snippet
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
 from keystone import Ks, KS_ARCH_X86, KS_MODE_32
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_32
+from unicorn.x86_const import UC_X86_REG_EAX
+
 from qiling.const import QL_ARCH, QL_OS
 
 cs = Cs(CS_ARCH_X86, CS_MODE_32)
@@ -26,6 +29,8 @@ ql = Qiling(
         ostype=QL_OS.LINUX,
         rootfs="/",
     )
+
+uc.reg_write(UC_X86_REG_EAX, 0xdeadbeef)
 ```
 
 Even better, they aren't consistent 🤮 🤢:
@@ -44,27 +49,29 @@ All these enums that represent the same shit about each architecture. There shou
 
 # Archist
 
-Archist is a convience library that maps all of these consts/enums together into a single intuitive class, such that you only need to import and use a single python object
+Archist is a convenience library that maps all of these consts/enums together into a single intuitive class per architecture, such that you only need to import and use a single python object. Since a large part of the code base is generated and statically defines relationships between architectures and their properties, IDEs can autocomplete and static type checkers actually understand parts of the code base. Qiling, for example, dynamically maps in values (e.g. `ql.arch.regs.eax`), so most static type checkers would reason the type of that value to be `typing.Any`. I also personally find it annoying to import and use a crap ton of constant values like C-style preprocessor `#define`s when writing python code.
 
-The above example would become this with Archist
+The above example would become this with Archist:
 
 ```python
-from capstone import Cs, CS_MODE_32
-from keystone import Ks, KS_MODE_32
-from unicorn import Uc, UC_MODE_32
+from capstone import Cs
+from keystone import Ks
+from unicorn import Uc
 from qiling.const import QL_OS
 
 from archist import X86
 
-cs = Cs(X86.cs, CS_MODE_32)
-ks = Ks(X86.ks, KS_MODE_32)
-uc = Uc(X86.uc, UC_MODE_32)
+cs = Cs(X86.cs, X86.mode._32.cs)
+ks = Ks(X86.ks, X86.mode._32.ks)
+uc = Uc(X86.uc, X86.mode._32.uc)
 ql = Qiling(
         code=b"\x31\xc0\x40\x90",
         archtype=X86.ql,
         ostype=QL_OS.LINUX,
         rootfs="/",
     )
+
+uc.reg_write(X86.reg.eax, 0xdeadbeef)
 ```
 
 ## Future Plans
