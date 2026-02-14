@@ -14,12 +14,20 @@ from util import getattr_regex, non_dunder_members, INT_CONSTS_LIBS
 from regs import generate_registers
 
 
+def int_str_sorted(items):
+    """Sort a list of ints and str, and place the ints at the front"""
+    ints = sorted(x for x in items if isinstance(x, int))
+    strs = sorted(x for x in items if isinstance(x, str))
+    return ints + strs
+
+
 @dataclasses.dataclass
 class ModeTemplate:
     name: str
     ks: str
     cs: str
     uc: str
+    aliases: typing.List[str | int] = dataclasses.field(default_factory=list)
 
 
 @dataclasses.dataclass
@@ -29,11 +37,18 @@ class ArchTemplate:
     cs: str
     uc: str
     ql: str
-    modes: typing.List[str]
+    modes: typing.List[ModeTemplate]
     registers: typing.List[str]
 
+    def all_mode_aliases(self) -> typing.List[str]:
+        str_aliases = {
+            f'"{m}"' if type(m) is str else m
+            for m in itertools.chain(*[m.aliases for m in self.modes])
+        }
+        return int_str_sorted(list(str_aliases))
 
-def generate_modes() -> typing.List[ModeTemplate]:
+
+def generate_modes() -> typing.Dict[str, ModeTemplate]:
     # Group 1 => Library prefix (UC == Unicorn)
     # Group 2 => Arch name
     # Group 3 => Optional Variant
@@ -49,6 +64,12 @@ def generate_modes() -> typing.List[ModeTemplate]:
         if name in ["BIG_ENDIAN", "LITTLE_ENDIAN"]:
             continue
 
+        aliases: typing.List[str | int] = [name.lower()]
+        try:
+            aliases.append(int(name))
+        except ValueError:
+            pass
+
         m = ModeTemplate(
             name=f"_{name}" if not name.isidentifier() else name,
             ks=f"keystone.KS_MODE_{name}"
@@ -60,14 +81,14 @@ def generate_modes() -> typing.List[ModeTemplate]:
             uc=f"unicorn.UC_MODE_{name}"
             if hasattr(unicorn, f"UC_MODE_{name}")
             else "None",
+            aliases=aliases,
         )
         modes.append(m)
 
-    modes.sort(key=lambda m: m.name)
-    return modes
+    return {m.name: m for m in modes}
 
 
-def generate_arches(modes: typing.List[ModeTemplate]) -> typing.List[ArchTemplate]:
+def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTemplate]:
     # Group 1 => Library prefix (UC == Unicorn)
     # Group 2 => Arch name
     var_pattern = re.compile(r"(\w\w)_ARCH_(\w+)")
@@ -99,32 +120,31 @@ def generate_arches(modes: typing.List[ModeTemplate]) -> typing.List[ArchTemplat
             modes=list(),
             registers=generate_registers(name),
         )
-        for mode in filter(lambda m: a.name in m.name, modes):
-            a.modes.append(mode.name)
+        for mode in filter(lambda m: a.name in m.name, modes.values()):
+            a.modes.append(mode)
 
         # Special Cases for Mode association with their respective architecture
-
         if name == "ARM64":
             # ARM64/aarch64 but *_MODE_ARM must still be used wth it
-            a.modes.append("ARM")
+            a.modes.append(modes["ARM"])
 
         if name == "X86":
-            a.modes += ["_16", "_32"]
+            a.modes += [modes["_16"], modes["_32"]]
 
         if name in ["x86", "PPC"]:
-            a.modes.append("_64")
+            a.modes.append(modes["_64"])
 
         if name == "ARM":
-            a.modes += ["THUMB", "MCLASS", "V8"]
+            a.modes += [modes["THUMB"], modes["MCLASS"], modes["V8"]]
 
         if name == "MIPS":
-            a.modes.append("MICRO")
+            a.modes.append(modes["MICRO"])
 
         if name == "SPARC":
-            a.modes.append("V9")
+            a.modes.append(modes["V9"])
 
         if name == "PPC":
-            a.modes += ["QPX", "SPE", "BOOKE", "PS"]
+            a.modes += [modes["QPX"], modes["SPE"], modes["BOOKE"], modes["PS"]]
 
         # Architecture special casing
         # X86 64bit is selected by a mode. Qiling is the only one without the concept of a "mode"
@@ -146,7 +166,7 @@ def generate_arches(modes: typing.List[ModeTemplate]) -> typing.List[ArchTemplat
                 if hasattr(unicorn, f"UC_ARCH_{name}")
                 else "None"
             )
-            a.modes.append("_64")
+            a.modes.append(modes["_64"])
 
         arches.append(a)
     arches.sort(key=lambda a: a.name)

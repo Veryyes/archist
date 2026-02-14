@@ -7,6 +7,8 @@
 # WARNING: This file is auto-generated. Any changes will be overwritten.#
 #########################################################################
 
+import typing
+
 import capstone
 import keystone
 import unicorn
@@ -65,18 +67,29 @@ class ARM(archist.core.Arch):
     uc = unicorn.UC_ARCH_ARM
     ql = qiling.const.QL_ARCH.ARM
 
-    class mode:
-        ARM = archist.modes.ARM
-        ARM1176 = archist.modes.ARM1176
-        ARM926 = archist.modes.ARM926
-        ARM946 = archist.modes.ARM946
-        ARMBE8 = archist.modes.ARMBE8
-        THUMB = archist.modes.THUMB
-        MCLASS = archist.modes.MCLASS
-        V8 = archist.modes.V8
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"]):
+        super().Uc(mode)
+
+    class Mode:
+        arm1176 = archist.modes.ARM1176
+        armbe8 = archist.modes.ARMBE8
+        arm946 = archist.modes.ARM946
+        arm926 = archist.modes.ARM926
+        arm = archist.modes.ARM
+        thumb = archist.modes.THUMB
+        mclass = archist.modes.MCLASS
+        v8 = archist.modes.V8
+        
+    class Reg:
         apsr=unicorn.arm_const.UC_ARM_REG_APSR
         apsr_g=unicorn.arm_const.UC_ARM_REG_APSR_G
         apsr_nzcv=unicorn.arm_const.UC_ARM_REG_APSR_NZCV
@@ -227,6 +240,7 @@ class ARM(archist.core.Arch):
         xpsr_nzcvq=unicorn.arm_const.UC_ARM_REG_XPSR_NZCVQ
         xpsr_nzcvqg=unicorn.arm_const.UC_ARM_REG_XPSR_NZCVQG
         
+
 class ARM64(archist.core.Arch):
     name = "ARM64"
     ks = keystone.KS_ARCH_ARM64
@@ -234,11 +248,22 @@ class ARM64(archist.core.Arch):
     uc = unicorn.UC_ARCH_ARM64
     ql = qiling.const.QL_ARCH.ARM64
 
-    class mode:
-        ARM = archist.modes.ARM
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["arm"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["arm"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["arm"]):
+        super().Uc(mode)
+
+    class Mode:
+        arm = archist.modes.ARM
+        
+    class Reg:
         b0=unicorn.arm64_const.UC_ARM64_REG_B0
         b1=unicorn.arm64_const.UC_ARM64_REG_B1
         b10=unicorn.arm64_const.UC_ARM64_REG_B10
@@ -538,6 +563,7 @@ class ARM64(archist.core.Arch):
         x9=unicorn.arm64_const.UC_ARM64_REG_X9
         xzr=unicorn.arm64_const.UC_ARM64_REG_XZR
         
+
 class BPF(archist.core.Arch):
     name = "BPF"
     ks = None
@@ -545,9 +571,21 @@ class BPF(archist.core.Arch):
     uc = None
     ql = None
 
-    class mode:
-        BPF_CLASSIC = archist.modes.BPF_CLASSIC
-        BPF_EXTENDED = archist.modes.BPF_EXTENDED
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["bpf_classic","bpf_extended"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["bpf_classic","bpf_extended"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["bpf_classic","bpf_extended"]):
+        super().Uc(mode)
+
+    class Mode:
+        bpf_classic = archist.modes.BPF_CLASSIC
+        bpf_extended = archist.modes.BPF_EXTENDED
         
 
 class CORTEX_M(archist.core.Arch):
@@ -581,17 +619,29 @@ class M680X(archist.core.Arch):
     uc = None
     ql = None
 
-    class mode:
-        M680X_6301 = archist.modes.M680X_6301
-        M680X_6309 = archist.modes.M680X_6309
-        M680X_6800 = archist.modes.M680X_6800
-        M680X_6801 = archist.modes.M680X_6801
-        M680X_6805 = archist.modes.M680X_6805
-        M680X_6808 = archist.modes.M680X_6808
-        M680X_6809 = archist.modes.M680X_6809
-        M680X_6811 = archist.modes.M680X_6811
-        M680X_CPU12 = archist.modes.M680X_CPU12
-        M680X_HCS08 = archist.modes.M680X_HCS08
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["m680x_6301","m680x_6309","m680x_6800","m680x_6801","m680x_6805","m680x_6808","m680x_6809","m680x_6811","m680x_cpu12","m680x_hcs08"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["m680x_6301","m680x_6309","m680x_6800","m680x_6801","m680x_6805","m680x_6808","m680x_6809","m680x_6811","m680x_cpu12","m680x_hcs08"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["m680x_6301","m680x_6309","m680x_6800","m680x_6801","m680x_6805","m680x_6808","m680x_6809","m680x_6811","m680x_cpu12","m680x_hcs08"]):
+        super().Uc(mode)
+
+    class Mode:
+        m680x_6309 = archist.modes.M680X_6309
+        m680x_hcs08 = archist.modes.M680X_HCS08
+        m680x_6805 = archist.modes.M680X_6805
+        m680x_6801 = archist.modes.M680X_6801
+        m680x_cpu12 = archist.modes.M680X_CPU12
+        m680x_6800 = archist.modes.M680X_6800
+        m680x_6809 = archist.modes.M680X_6809
+        m680x_6301 = archist.modes.M680X_6301
+        m680x_6808 = archist.modes.M680X_6808
+        m680x_6811 = archist.modes.M680X_6811
         
 
 class M68K(archist.core.Arch):
@@ -601,16 +651,27 @@ class M68K(archist.core.Arch):
     uc = unicorn.UC_ARCH_M68K
     ql = None
 
-    class mode:
-        M68K_000 = archist.modes.M68K_000
-        M68K_010 = archist.modes.M68K_010
-        M68K_020 = archist.modes.M68K_020
-        M68K_030 = archist.modes.M68K_030
-        M68K_040 = archist.modes.M68K_040
-        M68K_060 = archist.modes.M68K_060
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"]):
+        super().Uc(mode)
+
+    class Mode:
+        m68k_040 = archist.modes.M68K_040
+        m68k_000 = archist.modes.M68K_000
+        m68k_010 = archist.modes.M68K_010
+        m68k_030 = archist.modes.M68K_030
+        m68k_020 = archist.modes.M68K_020
+        m68k_060 = archist.modes.M68K_060
+        
+    class Reg:
         a0=unicorn.m68k_const.UC_M68K_REG_A0
         a1=unicorn.m68k_const.UC_M68K_REG_A1
         a2=unicorn.m68k_const.UC_M68K_REG_A2
@@ -647,6 +708,7 @@ class M68K(archist.core.Arch):
         pc=unicorn.m68k_const.UC_M68K_REG_PC
         sr=unicorn.m68k_const.UC_M68K_REG_SR
         
+
 class MAX(archist.core.Arch):
     name = "MAX"
     ks = keystone.KS_ARCH_MAX
@@ -662,16 +724,27 @@ class MIPS(archist.core.Arch):
     uc = unicorn.UC_ARCH_MIPS
     ql = qiling.const.QL_ARCH.MIPS
 
-    class mode:
-        MIPS2 = archist.modes.MIPS2
-        MIPS3 = archist.modes.MIPS3
-        MIPS32 = archist.modes.MIPS32
-        MIPS32R6 = archist.modes.MIPS32R6
-        MIPS64 = archist.modes.MIPS64
-        MICRO = archist.modes.MICRO
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"]):
+        super().Uc(mode)
+
+    class Mode:
+        mips32 = archist.modes.MIPS32
+        mips32r6 = archist.modes.MIPS32R6
+        mips64 = archist.modes.MIPS64
+        mips3 = archist.modes.MIPS3
+        mips2 = archist.modes.MIPS2
+        micro = archist.modes.MICRO
+        
+    class Reg:
         a0=unicorn.mips_const.UC_MIPS_REG_A0
         a1=unicorn.mips_const.UC_MIPS_REG_A1
         a2=unicorn.mips_const.UC_MIPS_REG_A2
@@ -825,6 +898,7 @@ class MIPS(archist.core.Arch):
         w9=unicorn.mips_const.UC_MIPS_REG_W9
         zero=unicorn.mips_const.UC_MIPS_REG_ZERO
         
+
 class MOS65XX(archist.core.Arch):
     name = "MOS65XX"
     ks = None
@@ -832,14 +906,26 @@ class MOS65XX(archist.core.Arch):
     uc = None
     ql = None
 
-    class mode:
-        MOS65XX_6502 = archist.modes.MOS65XX_6502
-        MOS65XX_65816 = archist.modes.MOS65XX_65816
-        MOS65XX_65816_LONG_M = archist.modes.MOS65XX_65816_LONG_M
-        MOS65XX_65816_LONG_MX = archist.modes.MOS65XX_65816_LONG_MX
-        MOS65XX_65816_LONG_X = archist.modes.MOS65XX_65816_LONG_X
-        MOS65XX_65C02 = archist.modes.MOS65XX_65C02
-        MOS65XX_W65C02 = archist.modes.MOS65XX_W65C02
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["mos65xx_6502","mos65xx_65816","mos65xx_65816_long_m","mos65xx_65816_long_mx","mos65xx_65816_long_x","mos65xx_65c02","mos65xx_w65c02"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["mos65xx_6502","mos65xx_65816","mos65xx_65816_long_m","mos65xx_65816_long_mx","mos65xx_65816_long_x","mos65xx_65c02","mos65xx_w65c02"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["mos65xx_6502","mos65xx_65816","mos65xx_65816_long_m","mos65xx_65816_long_mx","mos65xx_65816_long_x","mos65xx_65c02","mos65xx_w65c02"]):
+        super().Uc(mode)
+
+    class Mode:
+        mos65xx_65816 = archist.modes.MOS65XX_65816
+        mos65xx_65816_long_m = archist.modes.MOS65XX_65816_LONG_M
+        mos65xx_65c02 = archist.modes.MOS65XX_65C02
+        mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
+        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
+        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
+        mos65xx_6502 = archist.modes.MOS65XX_6502
         
 
 class PPC(archist.core.Arch):
@@ -849,17 +935,28 @@ class PPC(archist.core.Arch):
     uc = unicorn.UC_ARCH_PPC
     ql = qiling.const.QL_ARCH.PPC
 
-    class mode:
-        PPC32 = archist.modes.PPC32
-        PPC64 = archist.modes.PPC64
-        _64 = archist.modes._64
-        QPX = archist.modes.QPX
-        SPE = archist.modes.SPE
-        BOOKE = archist.modes.BOOKE
-        PS = archist.modes.PS
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal[64,"64","booke","ppc32","ppc64","ps","qpx","spe"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal[64,"64","booke","ppc32","ppc64","ps","qpx","spe"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal[64,"64","booke","ppc32","ppc64","ps","qpx","spe"]):
+        super().Uc(mode)
+
+    class Mode:
+        ppc64 = archist.modes.PPC64
+        ppc32 = archist.modes.PPC32
+        _64 = archist.modes._64
+        qpx = archist.modes.QPX
+        spe = archist.modes.SPE
+        booke = archist.modes.BOOKE
+        ps = archist.modes.PS
+        
+    class Reg:
         r0=unicorn.ppc_const.UC_PPC_REG_0
         r1=unicorn.ppc_const.UC_PPC_REG_1
         r10=unicorn.ppc_const.UC_PPC_REG_10
@@ -942,6 +1039,7 @@ class PPC(archist.core.Arch):
         pc=unicorn.ppc_const.UC_PPC_REG_PC
         xer=unicorn.ppc_const.UC_PPC_REG_XER
         
+
 class RISCV(archist.core.Arch):
     name = "RISCV"
     ks = None
@@ -949,13 +1047,24 @@ class RISCV(archist.core.Arch):
     uc = unicorn.UC_ARCH_RISCV
     ql = qiling.const.QL_ARCH.RISCV
 
-    class mode:
-        RISCV32 = archist.modes.RISCV32
-        RISCV64 = archist.modes.RISCV64
-        RISCVC = archist.modes.RISCVC
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"]):
+        super().Uc(mode)
+
+    class Mode:
+        riscv32 = archist.modes.RISCV32
+        riscvc = archist.modes.RISCVC
+        riscv64 = archist.modes.RISCV64
+        
+    class Reg:
         a0=unicorn.riscv_const.UC_RISCV_REG_A0
         a1=unicorn.riscv_const.UC_RISCV_REG_A1
         a2=unicorn.riscv_const.UC_RISCV_REG_A2
@@ -1215,6 +1324,7 @@ class RISCV(archist.core.Arch):
         x9=unicorn.riscv_const.UC_RISCV_REG_X9
         zero=unicorn.riscv_const.UC_RISCV_REG_ZERO
         
+
 class RISCV64(archist.core.Arch):
     name = "RISCV64"
     ks = None
@@ -1222,8 +1332,20 @@ class RISCV64(archist.core.Arch):
     uc = None
     ql = qiling.const.QL_ARCH.RISCV64
 
-    class mode:
-        RISCV64 = archist.modes.RISCV64
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["riscv64"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["riscv64"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["riscv64"]):
+        super().Uc(mode)
+
+    class Mode:
+        riscv64 = archist.modes.RISCV64
         
 
 class S390X(archist.core.Arch):
@@ -1233,8 +1355,7 @@ class S390X(archist.core.Arch):
     uc = unicorn.UC_ARCH_S390X
     ql = None
 
-
-    class reg:
+    class Reg:
         a0=unicorn.s390x_const.UC_S390X_REG_A0
         a1=unicorn.s390x_const.UC_S390X_REG_A1
         a10=unicorn.s390x_const.UC_S390X_REG_A10
@@ -1353,6 +1474,7 @@ class S390X(archist.core.Arch):
         r8=unicorn.s390x_const.UC_S390X_REG_R8
         r9=unicorn.s390x_const.UC_S390X_REG_R9
         
+
 class SH(archist.core.Arch):
     name = "SH"
     ks = None
@@ -1360,14 +1482,26 @@ class SH(archist.core.Arch):
     uc = None
     ql = None
 
-    class mode:
-        SH2 = archist.modes.SH2
-        SH2A = archist.modes.SH2A
-        SH3 = archist.modes.SH3
-        SH4 = archist.modes.SH4
-        SH4A = archist.modes.SH4A
-        SHDSP = archist.modes.SHDSP
-        SHFPU = archist.modes.SHFPU
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["sh2","sh2a","sh3","sh4","sh4a","shdsp","shfpu"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["sh2","sh2a","sh3","sh4","sh4a","shdsp","shfpu"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["sh2","sh2a","sh3","sh4","sh4a","shdsp","shfpu"]):
+        super().Uc(mode)
+
+    class Mode:
+        sh2a = archist.modes.SH2A
+        sh4a = archist.modes.SH4A
+        shfpu = archist.modes.SHFPU
+        sh3 = archist.modes.SH3
+        sh2 = archist.modes.SH2
+        sh4 = archist.modes.SH4
+        shdsp = archist.modes.SHDSP
         
 
 class SPARC(archist.core.Arch):
@@ -1377,13 +1511,24 @@ class SPARC(archist.core.Arch):
     uc = unicorn.UC_ARCH_SPARC
     ql = None
 
-    class mode:
-        SPARC32 = archist.modes.SPARC32
-        SPARC64 = archist.modes.SPARC64
-        V9 = archist.modes.V9
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"]):
+        super().Uc(mode)
+
+    class Mode:
+        sparc32 = archist.modes.SPARC32
+        sparc64 = archist.modes.SPARC64
+        v9 = archist.modes.V9
+        
+    class Reg:
         ending=unicorn.sparc_const.UC_SPARC_REG_ENDING
         f0=unicorn.sparc_const.UC_SPARC_REG_F0
         f1=unicorn.sparc_const.UC_SPARC_REG_F1
@@ -1478,6 +1623,7 @@ class SPARC(archist.core.Arch):
         xcc=unicorn.sparc_const.UC_SPARC_REG_XCC
         y=unicorn.sparc_const.UC_SPARC_REG_Y
         
+
 class SYSTEMZ(archist.core.Arch):
     name = "SYSTEMZ"
     ks = keystone.KS_ARCH_SYSTEMZ
@@ -1509,17 +1655,28 @@ class TRICORE(archist.core.Arch):
     uc = unicorn.UC_ARCH_TRICORE
     ql = None
 
-    class mode:
-        TRICORE_110 = archist.modes.TRICORE_110
-        TRICORE_120 = archist.modes.TRICORE_120
-        TRICORE_130 = archist.modes.TRICORE_130
-        TRICORE_131 = archist.modes.TRICORE_131
-        TRICORE_160 = archist.modes.TRICORE_160
-        TRICORE_161 = archist.modes.TRICORE_161
-        TRICORE_162 = archist.modes.TRICORE_162
-        
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"]):
+        super().Ks(mode)
 
-    class reg:
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"]):
+        super().Uc(mode)
+
+    class Mode:
+        tricore_110 = archist.modes.TRICORE_110
+        tricore_120 = archist.modes.TRICORE_120
+        tricore_130 = archist.modes.TRICORE_130
+        tricore_161 = archist.modes.TRICORE_161
+        tricore_160 = archist.modes.TRICORE_160
+        tricore_162 = archist.modes.TRICORE_162
+        tricore_131 = archist.modes.TRICORE_131
+        
+    class Reg:
         a0=unicorn.tricore_const.UC_TRICORE_REG_A0
         a1=unicorn.tricore_const.UC_TRICORE_REG_A1
         a10=unicorn.tricore_const.UC_TRICORE_REG_A10
@@ -1634,6 +1791,7 @@ class TRICORE(archist.core.Arch):
         tr0evt=unicorn.tricore_const.UC_TRICORE_REG_TR0EVT
         tr1evt=unicorn.tricore_const.UC_TRICORE_REG_TR1EVT
         
+
 class WASM(archist.core.Arch):
     name = "WASM"
     ks = None
@@ -1649,12 +1807,23 @@ class X86(archist.core.Arch):
     uc = unicorn.UC_ARCH_X86
     ql = qiling.const.QL_ARCH.X86
 
-    class mode:
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal[16,32,"16","32"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal[16,32,"16","32"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal[16,32,"16","32"]):
+        super().Uc(mode)
+
+    class Mode:
         _16 = archist.modes._16
         _32 = archist.modes._32
         
-
-    class reg:
+    class Reg:
         ah=unicorn.x86_const.UC_X86_REG_AH
         al=unicorn.x86_const.UC_X86_REG_AL
         ax=unicorn.x86_const.UC_X86_REG_AX
@@ -1896,6 +2065,7 @@ class X86(archist.core.Arch):
         zmm8=unicorn.x86_const.UC_X86_REG_ZMM8
         zmm9=unicorn.x86_const.UC_X86_REG_ZMM9
         
+
 class X8664(archist.core.Arch):
     name = "X8664"
     ks = keystone.KS_ARCH_X86
@@ -1903,7 +2073,19 @@ class X8664(archist.core.Arch):
     uc = unicorn.UC_ARCH_X86
     ql = qiling.const.QL_ARCH.X8664
 
-    class mode:
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal[64,"64"]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal[64,"64"]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal[64,"64"]):
+        super().Uc(mode)
+
+    class Mode:
         _64 = archist.modes._64
         
 
@@ -1913,7 +2095,6 @@ class XCORE(archist.core.Arch):
     cs = capstone.CS_ARCH_XCORE
     uc = None
     ql = None
-
 
 
 ALL_ARCHES = [A8086, ALL, ARM, ARM64, BPF, CORTEX_M, EVM, HEXAGON, M680X, M68K, MAX, MIPS, MOS65XX, PPC, RISCV, RISCV64, S390X, SH, SPARC, SYSTEMZ, SYSZ, TMS320C64X, TRICORE, WASM, X86, X8664, XCORE]

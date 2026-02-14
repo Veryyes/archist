@@ -7,6 +7,8 @@
 # WARNING: This file is auto-generated. Any changes will be overwritten.#
 #########################################################################
 
+import typing
+
 import capstone
 import keystone
 import unicorn
@@ -48,13 +50,33 @@ class {{ a.name }}(archist.core.Arch):
     cs = {{ a.cs }}
     uc = {{ a.uc }}
     ql = {{ a.ql }}
+
 {% if a.modes | length > 0 %}
-    class mode:
-        {% for mt in a.modes %}{{ mt }} = archist.modes.{{ mt }}
-        {% endfor %}{% endif %}
+    @classmethod
+    def Ks(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+        super().Ks(mode)
+
+    @classmethod
+    def Cs(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+        super().Cs(mode)
+
+    @classmethod
+    def Uc(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+        super().Uc(mode)
+{% endif %}
+
+{% if a.modes | length > 0 %}
+    class Mode:
+        {% for mt in a.modes %}{{ mt.name | lower }} = archist.modes.{{ mt.name }}
+        {% endfor %}
+{% endif %}
+
 {% if a.registers | length > 0 %}
-    class reg:
+    class Reg:
         {% for reg_name, lib_name in a.registers.items() %}{{ reg_name | lower }}={{ lib_name }}
-        {% endfor %}{% endif %}{% endfor %}
+        {% endfor %}
+{% endif %}
+
+{% endfor %}
 
 ALL_ARCHES = [{{ arches | map(attribute="name") | join(", ") }}]

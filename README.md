@@ -18,6 +18,7 @@ from keystone import Ks, KS_ARCH_X86, KS_MODE_32
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_32
 from unicorn.x86_const import UC_X86_REG_EAX
 
+from qiling import Qiling
 from qiling.const import QL_ARCH, QL_OS
 
 cs = Cs(CS_ARCH_X86, CS_MODE_32)
@@ -57,6 +58,7 @@ The above example would become this with Archist:
 from capstone import Cs
 from keystone import Ks
 from unicorn import Uc
+from qiling import Qiling
 from qiling.const import QL_OS
 
 from archist import X86
@@ -72,6 +74,14 @@ ql = Qiling(
     )
 
 uc.reg_write(X86.reg.eax, 0xdeadbeef)
+```
+
+```
+from archist import X86
+
+cs = X86.Cs(X86.mode._32.cs)
+ks = X86.Ks(X86.mode._32.ks)
+uc = X86.Uc(X86.mode._32.uc)
 ```
 
 ## Future Plans
