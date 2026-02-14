@@ -44,5 +44,9 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/archist"]
 
+[tool.ruff.lint]
+preview = true
+extend-select = ["E303", "W391"]
+
 [tool.ruff.format]
 exclude = ["src/archist/__init__.py", "src/archist/modes.py"]
