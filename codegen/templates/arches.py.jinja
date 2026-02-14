@@ -51,18 +51,32 @@ class {{ a.name }}(archist.core.Arch):
     uc = {{ a.uc }}
     ql = {{ a.ql }}
 
-{% if a.modes | length > 0 %}
+
+{% if a.ks != "None" %}
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+    def Ks(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
         super().Ks(mode)
+    {% else %}):
+        super().Ks(mode=0)
+    {% endif %}
+{% endif %}
 
+{% if a.cs != "None" %}
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+    def Cs(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
         super().Cs(mode)
+    {% else %}):
+        super().Cs(mode=0)
+    {% endif %}
+{% endif %}
 
+{% if a.uc != "None" %}
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
+    def Uc(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
         super().Uc(mode)
+    {% else %}):
+        super().Uc(mode=0)
+    {% endif %}
 {% endif %}
 
 {% if a.modes | length > 0 %}
