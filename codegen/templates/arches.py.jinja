@@ -54,39 +54,39 @@ class {{ a.name }}(archist.core.Arch):
 
 {% if a.ks != "None" %}
     @classmethod
-    def Ks(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
-        super().Ks(mode)
+    def Ks(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
+        return super().Ks(mode)
     {% else %}):
-        super().Ks(mode=0)
+        return super().Ks(mode=archist.core.NO_MODES)
     {% endif %}
 {% endif %}
 
 {% if a.cs != "None" %}
     @classmethod
-    def Cs(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
-        super().Cs(mode)
+    def Cs(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
+        return super().Cs(mode)
     {% else %}):
-        super().Cs(mode=0)
+        return super().Cs(mode=archist.core.NO_MODES)
     {% endif %}
 {% endif %}
 
 {% if a.uc != "None" %}
     @classmethod
-    def Uc(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}]):
-        super().Uc(mode)
+    def Uc(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
+        return super().Uc(mode)
     {% else %}):
-        super().Uc(mode=0)
+        return super().Uc(mode=archist.core.NO_MODES)
     {% endif %}
 {% endif %}
 
 {% if a.modes | length > 0 %}
-    class Mode:
+    class Modes:
         {% for mt in a.modes %}{{ mt.name | lower }} = archist.modes.{{ mt.name }}
         {% endfor %}
 {% endif %}
 
 {% if a.registers | length > 0 %}
-    class Reg:
+    class Regs:
         {% for reg_name, lib_name in a.registers.items() %}{{ reg_name | lower }}={{ lib_name }}
         {% endfor %}
 {% endif %}

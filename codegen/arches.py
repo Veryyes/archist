@@ -131,7 +131,7 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
         if name == "X86":
             a.modes += [modes["_16"], modes["_32"]]
 
-        if name in ["x86", "PPC"]:
+        if name in ["X86", "PPC"]:
             a.modes.append(modes["_64"])
 
         if name == "ARM":
@@ -144,7 +144,15 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
             a.modes.append(modes["V9"])
 
         if name == "PPC":
-            a.modes += [modes["QPX"], modes["SPE"], modes["BOOKE"], modes["PS"]]
+            # BUG
+            # modes["SPE"] and modes["BOOKE"] are omitted from this list because it is an invalid mode.
+            # Appears to be another capstone bug or something that hasnt made its way to the latest release?
+            a.modes += [modes["QPX"], modes["PS"]]
+
+        if name == "MOS65XX":
+            # BUG
+            # Claude says this being an invalid mode in capstone is a bug. Trying to use this will result in a CS_ERR_MODE
+            a.modes.remove(modes["MOS65XX_65816"])
 
         # Architecture special casing
         # X86 64bit is selected by a mode. Qiling is the only one without the concept of a "mode"

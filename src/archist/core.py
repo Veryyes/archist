@@ -30,6 +30,9 @@ class Mode(pydantic.BaseModel):
         return hash(self.name)
 
 
+NO_MODES = Mode(name="N/A", ks=0, cs=0, uc=0)
+
+
 class Arch(pydantic.BaseModel):
     name: typing.ClassVar[str]
     ks: typing.ClassVar[int | None]
@@ -37,23 +40,45 @@ class Arch(pydantic.BaseModel):
     uc: typing.ClassVar[int | None]
     ql: typing.ClassVar[enum.IntEnum | None]
 
+    class Modes:
+        pass
+
     @classmethod
-    def Ks(cls, mode: Mode | typing.Any):
+    def _mode_lookup(cls, mode: Mode | typing.Any) -> Mode:
+        """Does a getattr based lookup in the Mode subclass of Arch"""
+        if isinstance(mode, Mode):
+            return mode
+
+        # Handles Numbers or numbers encoded as a string
+        if isinstance(mode, int) or (isinstance(mode, str) and mode.isdigit()):
+            mode = f"_{mode}"
+
+        assert isinstance(mode, str)
+
+        found = getattr(cls.Modes, mode, None)
+        if found is not None:
+            return found
+        raise NotImplementedError(
+            f"No such mode ({mode}) exists for architecture: {cls.__name__}"
+        )
+
+    @classmethod
+    def Ks(cls, mode: Mode | typing.Any = NO_MODES):
         if cls.ks is None:
             raise NotImplementedError(f"No Keystone Implementation of: {cls.__name__}")
-        return keystone.Ks(cls.cs, mode)
+        return keystone.Ks(cls.ks, cls._mode_lookup(mode).ks)
 
     @classmethod
-    def Cs(cls, mode: Mode | typing.Any):
+    def Cs(cls, mode: Mode | typing.Any = NO_MODES):
         if cls.cs is None:
             raise NotImplementedError(f"No Capstone Implementation of: {cls.__name__}")
-        return capstone.Cs(cls.cs, mode)
+        return capstone.Cs(cls.cs, cls._mode_lookup(mode).cs)
 
     @classmethod
-    def Uc(cls, mode: Mode | typing.Any):
+    def Uc(cls, mode: Mode | typing.Any = NO_MODES):
         if cls.uc is None:
             raise NotImplementedError(f"No Unicorn Implementation of: {cls.__name__}")
-        return unicorn.Uc(cls.cs, mode)
+        return unicorn.Uc(cls.uc, cls._mode_lookup(mode).uc)
 
     @classmethod
     def modes(cls) -> typing.List[Mode]:
