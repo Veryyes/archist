@@ -13,7 +13,7 @@
 
 ```python
 # Example Code snippet
-from capstone import Cs, CS_ARCH_X86, CS_MODE_32
+from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_BIG_ENDIAN
 from keystone import Ks, KS_ARCH_X86, KS_MODE_32
 from unicorn import Uc, UC_ARCH_X86, UC_MODE_32
 from unicorn.x86_const import UC_X86_REG_EAX
@@ -21,7 +21,7 @@ from unicorn.x86_const import UC_X86_REG_EAX
 from qiling import Qiling
 from qiling.const import QL_ARCH, QL_OS
 
-cs = Cs(CS_ARCH_X86, CS_MODE_32)
+cs = Cs(CS_ARCH_ARM, CS_MODE_THUMB | CS_MODE_BIG_ENDIAN)
 ks = Ks(KS_ARCH_X86, KS_MODE_32)
 uc = Uc(UC_ARCH_X86, UC_MODE_32)
 ql = Qiling(
@@ -55,17 +55,14 @@ Archist is a convenience library that maps all of these consts/enums together in
 The above example would become this with Archist:
 
 ```python
-from capstone import Cs
-from keystone import Ks
-from unicorn import Uc
 from qiling import Qiling
 from qiling.const import QL_OS
 
 from archist import X86
 
-cs = Cs(X86.cs, X86.mode._32.cs)
-ks = Ks(X86.ks, X86.mode._32.ks)
-uc = Uc(X86.uc, X86.mode._32.uc)
+cs = ARM.Cs(mode="thumb", endian="big")
+ks = X86.Ks(mode=32)
+uc = X86.Uc(mode="32") # String is valid too
 ql = Qiling(
         code=b"\x31\xc0\x40\x90",
         archtype=X86.ql,
@@ -73,15 +70,7 @@ ql = Qiling(
         rootfs="/",
     )
 
-uc.reg_write(X86.reg.eax, 0xdeadbeef)
-```
-
-```
-from archist import X86
-
-cs = X86.Cs(X86.mode._32.cs)
-ks = X86.Ks(X86.mode._32.ks)
-uc = X86.Uc(X86.mode._32.uc)
+uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ```
 
 ## Future Plans
