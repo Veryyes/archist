@@ -18,31 +18,6 @@ import qiling.const
 import archist.core
 import archist.modes
 
-##########
-# ENDIAN #
-##########
-# All the consts for little endian are the same (but not big endian)
-BIG_ENDIAN = archist.core.Endian(
-    name = "big",
-    ks = keystone.KS_MODE_BIG_ENDIAN,
-    cs = capstone.CS_MODE_BIG_ENDIAN,
-    uc = unicorn.UC_MODE_BIG_ENDIAN,
-    ql = qiling.const.QL_ENDIAN.EB
-)
-
-# Little Endian happens to be the same const across all of these libs
-assert capstone.CS_MODE_LITTLE_ENDIAN == keystone.KS_MODE_LITTLE_ENDIAN == unicorn.UC_MODE_LITTLE_ENDIAN
-LITTLE_ENDIAN = archist.core.Endian(
-    name = "little",
-    ks = keystone.KS_MODE_LITTLE_ENDIAN,
-    cs = keystone.KS_MODE_LITTLE_ENDIAN,
-    uc = keystone.KS_MODE_LITTLE_ENDIAN,
-    ql = qiling.const.QL_ENDIAN.EL
-)
-
-#################
-# ARCHITECTURES #
-#################
 {% for a in arches %}
 class {{ a.name }}(archist.core.Arch):
     name = "{{ a.name }}"
@@ -54,29 +29,17 @@ class {{ a.name }}(archist.core.Arch):
 
 {% if a.ks != "None" %}
     @classmethod
-    def Ks(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    {% else %}):
-        return super().Ks(mode=archist.core.NO_MODES)
-    {% endif %}
+    {% set class_name = "Ks" %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.cs != "None" %}
     @classmethod
-    def Cs(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    {% else %}):
-        return super().Cs(mode=archist.core.NO_MODES)
-    {% endif %}
+    {% set class_name = "Cs" %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.uc != "None" %}
     @classmethod
-    def Uc(cls{% if a.all_mode_aliases() | length > 0 %}, mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases() | join(",") }}] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    {% else %}):
-        return super().Uc(mode=archist.core.NO_MODES)
-    {% endif %}
+    {% set class_name = "Uc" %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.modes | length > 0 %}

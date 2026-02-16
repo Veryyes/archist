@@ -18,31 +18,6 @@ import qiling.const
 import archist.core
 import archist.modes
 
-##########
-# ENDIAN #
-##########
-# All the consts for little endian are the same (but not big endian)
-BIG_ENDIAN = archist.core.Endian(
-    name = "big",
-    ks = keystone.KS_MODE_BIG_ENDIAN,
-    cs = capstone.CS_MODE_BIG_ENDIAN,
-    uc = unicorn.UC_MODE_BIG_ENDIAN,
-    ql = qiling.const.QL_ENDIAN.EB
-)
-
-# Little Endian happens to be the same const across all of these libs
-assert capstone.CS_MODE_LITTLE_ENDIAN == keystone.KS_MODE_LITTLE_ENDIAN == unicorn.UC_MODE_LITTLE_ENDIAN
-LITTLE_ENDIAN = archist.core.Endian(
-    name = "little",
-    ks = keystone.KS_MODE_LITTLE_ENDIAN,
-    cs = keystone.KS_MODE_LITTLE_ENDIAN,
-    uc = keystone.KS_MODE_LITTLE_ENDIAN,
-    ql = qiling.const.QL_ENDIAN.EL
-)
-
-#################
-# ARCHITECTURES #
-#################
 
 class A8086(archist.core.Arch):
     name = "A8086"
@@ -52,18 +27,6 @@ class A8086(archist.core.Arch):
     ql = qiling.const.QL_ARCH.A8086
 
 
-class ALL(archist.core.Arch):
-    name = "ALL"
-    ks = None
-    cs = capstone.CS_ARCH_ALL
-    uc = None
-    ql = None
-
-    @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
-
 class ARM(archist.core.Arch):
     name = "ARM"
     ks = keystone.KS_ARCH_ARM
@@ -72,23 +35,56 @@ class ARM(archist.core.Arch):
     ql = qiling.const.QL_ARCH.ARM
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["arm","thumb"] = archist.core.NO_MODES,
+        v8:bool = False,
+        
+    ):
+        return cls._Ks(
+            mode=mode,
+            endian=endian,
+            v8 = False,
+            
+        )
+
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["arm","mclass","thumb"] = archist.core.NO_MODES,
+        v8:bool = False,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            v8 = False,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb","v8"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["arm","arm1176","arm926","arm946","armbe8","mclass","thumb"] = archist.core.NO_MODES,
+        v8:bool = False,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            v8 = False,
+            
+        )
+
     class Modes:
-        arm926 = archist.modes.ARM926
         arm = archist.modes.ARM
-        arm946 = archist.modes.ARM946
         arm1176 = archist.modes.ARM1176
+        arm946 = archist.modes.ARM946
         armbe8 = archist.modes.ARMBE8
+        arm926 = archist.modes.ARM926
         thumb = archist.modes.THUMB
         mclass = archist.modes.MCLASS
         v8 = archist.modes.V8
@@ -253,20 +249,44 @@ class ARM64(archist.core.Arch):
     ql = qiling.const.QL_ARCH.ARM64
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal["arm"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
-    @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["arm"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
-    @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["arm"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
-    class Modes:
-        arm = archist.modes.ARM
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
         
+        
+    ):
+        return cls._Ks(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
+    @classmethod
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
+    @classmethod
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Uc(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     class Regs:
         b0=unicorn.arm64_const.UC_ARM64_REG_B0
         b1=unicorn.arm64_const.UC_ARM64_REG_B1
@@ -576,12 +596,21 @@ class BPF(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["bpf_classic","bpf_extended"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["bpf_classic","bpf_extended"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
-        bpf_extended = archist.modes.BPF_EXTENDED
         bpf_classic = archist.modes.BPF_CLASSIC
+        bpf_extended = archist.modes.BPF_EXTENDED
         
 
 class CORTEX_M(archist.core.Arch):
@@ -600,13 +629,31 @@ class EVM(archist.core.Arch):
     ql = qiling.const.QL_ARCH.EVM
 
     @classmethod
-    def Ks(cls):
-        return super().Ks(mode=archist.core.NO_MODES)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Ks(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class HEXAGON(archist.core.Arch):
     name = "HEXAGON"
@@ -616,9 +663,18 @@ class HEXAGON(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Ks(cls):
-        return super().Ks(mode=archist.core.NO_MODES)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Ks(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class M680X(archist.core.Arch):
     name = "M680X"
@@ -628,20 +684,29 @@ class M680X(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["m680x_6301","m680x_6309","m680x_6800","m680x_6801","m680x_6805","m680x_6808","m680x_6809","m680x_6811","m680x_cpu12","m680x_hcs08"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["m680x_6301","m680x_6309","m680x_6800","m680x_6801","m680x_6805","m680x_6808","m680x_6809","m680x_6811","m680x_cpu12","m680x_hcs08"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
-        m680x_cpu12 = archist.modes.M680X_CPU12
-        m680x_6800 = archist.modes.M680X_6800
-        m680x_6309 = archist.modes.M680X_6309
-        m680x_6801 = archist.modes.M680X_6801
-        m680x_6301 = archist.modes.M680X_6301
-        m680x_6809 = archist.modes.M680X_6809
-        m680x_6805 = archist.modes.M680X_6805
+        m680x_6811 = archist.modes.M680X_6811
         m680x_hcs08 = archist.modes.M680X_HCS08
         m680x_6808 = archist.modes.M680X_6808
-        m680x_6811 = archist.modes.M680X_6811
+        m680x_6301 = archist.modes.M680X_6301
+        m680x_6800 = archist.modes.M680X_6800
+        m680x_6809 = archist.modes.M680X_6809
+        m680x_cpu12 = archist.modes.M680X_CPU12
+        m680x_6805 = archist.modes.M680X_6805
+        m680x_6309 = archist.modes.M680X_6309
+        m680x_6801 = archist.modes.M680X_6801
         
 
 class M68K(archist.core.Arch):
@@ -652,20 +717,38 @@ class M68K(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["m68k_000","m68k_010","m68k_020","m68k_030","m68k_040","m68k_060"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Uc(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     class Modes:
-        m68k_010 = archist.modes.M68K_010
-        m68k_030 = archist.modes.M68K_030
         m68k_000 = archist.modes.M68K_000
-        m68k_020 = archist.modes.M68K_020
+        m68k_030 = archist.modes.M68K_030
         m68k_060 = archist.modes.M68K_060
         m68k_040 = archist.modes.M68K_040
+        m68k_010 = archist.modes.M68K_010
+        m68k_020 = archist.modes.M68K_020
         
     class Regs:
         a0=unicorn.m68k_const.UC_M68K_REG_A0
@@ -713,17 +796,44 @@ class MAX(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Ks(cls):
-        return super().Ks(mode=archist.core.NO_MODES)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Ks(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls):
-        return super().Uc(mode=archist.core.NO_MODES)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Uc(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class MIPS(archist.core.Arch):
     name = "MIPS"
@@ -733,23 +843,74 @@ class MIPS(archist.core.Arch):
     ql = qiling.const.QL_ARCH.MIPS
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["mips32","mips64"] = archist.core.NO_MODES,
+        micro:bool = False,
+        mips2:bool = False,
+        mips3:bool = False,
+        mips32r6:bool = False,
+        
+    ):
+        return cls._Ks(
+            mode=mode,
+            endian=endian,
+            micro = False,
+            mips2 = False,
+            mips3 = False,
+            mips32r6 = False,
+            
+        )
+
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["mips32","mips64"] = archist.core.NO_MODES,
+        micro:bool = False,
+        mips2:bool = False,
+        mips3:bool = False,
+        mips32r6:bool = False,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            micro = False,
+            mips2 = False,
+            mips3 = False,
+            mips32r6 = False,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["micro","mips2","mips3","mips32","mips32r6","mips64"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["mips32","mips64"] = archist.core.NO_MODES,
+        micro:bool = False,
+        mips2:bool = False,
+        mips3:bool = False,
+        mips32r6:bool = False,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            micro = False,
+            mips2 = False,
+            mips3 = False,
+            mips32r6 = False,
+            
+        )
+
     class Modes:
-        mips32 = archist.modes.MIPS32
-        mips2 = archist.modes.MIPS2
-        mips64 = archist.modes.MIPS64
         mips3 = archist.modes.MIPS3
         mips32r6 = archist.modes.MIPS32R6
+        mips2 = archist.modes.MIPS2
+        mips64 = archist.modes.MIPS64
+        mips32 = archist.modes.MIPS32
         micro = archist.modes.MICRO
         
     class Regs:
@@ -915,16 +1076,25 @@ class MOS65XX(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["mos65xx_6502","mos65xx_65816_long_m","mos65xx_65816_long_mx","mos65xx_65816_long_x","mos65xx_65c02","mos65xx_w65c02"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["mos65xx_6502","mos65xx_65816_long_m","mos65xx_65816_long_mx","mos65xx_65816_long_x","mos65xx_65c02","mos65xx_w65c02"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
         mos65xx_65c02 = archist.modes.MOS65XX_65C02
-        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
         mos65xx_65816_long_m = archist.modes.MOS65XX_65816_LONG_M
-        mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
-        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
         mos65xx_6502 = archist.modes.MOS65XX_6502
+        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
+        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
+        mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
         
 
 class PPC(archist.core.Arch):
@@ -935,20 +1105,47 @@ class PPC(archist.core.Arch):
     ql = qiling.const.QL_ARCH.PPC
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal[64,"64","ppc32","ppc64","ps","qpx"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[64,"64","ppc32","ppc64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Ks(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal[64,"64","ppc32","ppc64","ps","qpx"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[64,"64","ps","qpx"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal[64,"64","ppc32","ppc64","ps","qpx"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[64,"64","ppc32","ppc64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
-        ppc32 = archist.modes.PPC32
         ppc64 = archist.modes.PPC64
+        ppc32 = archist.modes.PPC32
         _64 = archist.modes._64
         qpx = archist.modes.QPX
         ps = archist.modes.PS
@@ -1045,16 +1242,34 @@ class RISCV(archist.core.Arch):
     ql = qiling.const.QL_ARCH.RISCV
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["riscv32","riscv64","riscvc"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["riscv32","riscv64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
-        riscv32 = archist.modes.RISCV32
         riscvc = archist.modes.RISCVC
+        riscv32 = archist.modes.RISCV32
         riscv64 = archist.modes.RISCV64
         
     class Regs:
@@ -1337,9 +1552,18 @@ class S390X(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Uc(cls):
-        return super().Uc(mode=archist.core.NO_MODES)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Uc(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     class Regs:
         a0=unicorn.s390x_const.UC_S390X_REG_A0
         a1=unicorn.s390x_const.UC_S390X_REG_A1
@@ -1468,17 +1692,26 @@ class SH(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["sh2","sh2a","sh3","sh4","sh4a","shdsp","shfpu"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["sh2","sh2a","sh3","sh4","sh4a","shdsp","shfpu"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
-        sh2a = archist.modes.SH2A
-        sh3 = archist.modes.SH3
-        shdsp = archist.modes.SHDSP
-        shfpu = archist.modes.SHFPU
-        sh4a = archist.modes.SH4A
         sh4 = archist.modes.SH4
+        shfpu = archist.modes.SHFPU
+        sh2a = archist.modes.SH2A
+        sh4a = archist.modes.SH4A
+        sh3 = archist.modes.SH3
         sh2 = archist.modes.SH2
+        shdsp = archist.modes.SHDSP
         
 
 class SPARC(archist.core.Arch):
@@ -1489,17 +1722,50 @@ class SPARC(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["sparc32","sparc64"] = archist.core.NO_MODES,
+        v9:bool = False,
+        
+    ):
+        return cls._Ks(
+            mode=mode,
+            endian=endian,
+            v9 = False,
+            
+        )
+
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        v9:bool = False,
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            v9 = False,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["sparc32","sparc64","v9"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["sparc32","sparc64"] = archist.core.NO_MODES,
+        v9:bool = False,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            v9 = False,
+            
+        )
+
     class Modes:
         sparc32 = archist.modes.SPARC32
         sparc64 = archist.modes.SPARC64
@@ -1609,9 +1875,18 @@ class SYSTEMZ(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Ks(cls):
-        return super().Ks(mode=archist.core.NO_MODES)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Ks(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class SYSZ(archist.core.Arch):
     name = "SYSZ"
@@ -1621,9 +1896,18 @@ class SYSZ(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class TMS320C64X(archist.core.Arch):
     name = "TMS320C64X"
@@ -1633,9 +1917,18 @@ class TMS320C64X(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class TRICORE(archist.core.Arch):
     name = "TRICORE"
@@ -1645,21 +1938,39 @@ class TRICORE(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal["tricore_110","tricore_120","tricore_130","tricore_131","tricore_160","tricore_161","tricore_162"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Uc(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
     class Modes:
-        tricore_162 = archist.modes.TRICORE_162
-        tricore_161 = archist.modes.TRICORE_161
-        tricore_110 = archist.modes.TRICORE_110
-        tricore_130 = archist.modes.TRICORE_130
         tricore_120 = archist.modes.TRICORE_120
         tricore_160 = archist.modes.TRICORE_160
+        tricore_110 = archist.modes.TRICORE_110
+        tricore_130 = archist.modes.TRICORE_130
+        tricore_161 = archist.modes.TRICORE_161
         tricore_131 = archist.modes.TRICORE_131
+        tricore_162 = archist.modes.TRICORE_162
         
     class Regs:
         a0=unicorn.tricore_const.UC_TRICORE_REG_A0
@@ -1785,9 +2096,18 @@ class WASM(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
+
 
 class X86(archist.core.Arch):
     name = "X86"
@@ -1797,17 +2117,44 @@ class X86(archist.core.Arch):
     ql = qiling.const.QL_ARCH.X86
 
     @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
+    def Ks(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Ks(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Cs(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
+    def Uc(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        mode:archist.core.Mode | typing.Literal[16,32,64,"16","32","64"] = archist.core.NO_MODES,
+        
+    ):
+        return cls._Uc(
+            mode=mode,
+            endian=endian,
+            
+        )
+
     class Modes:
         _16 = archist.modes._16
         _32 = archist.modes._32
@@ -2058,26 +2405,11 @@ class X86(archist.core.Arch):
 
 class X8664(archist.core.Arch):
     name = "X8664"
-    ks = keystone.KS_ARCH_X86
-    cs = capstone.CS_ARCH_X86
-    uc = unicorn.UC_ARCH_X86
+    ks = None
+    cs = None
+    uc = None
     ql = qiling.const.QL_ARCH.X8664
 
-    @classmethod
-    def Ks(cls, mode:archist.core.Mode | typing.Literal[64,"64"] = archist.core.NO_MODES):
-        return super().Ks(mode)
-    
-    @classmethod
-    def Cs(cls, mode:archist.core.Mode | typing.Literal[64,"64"] = archist.core.NO_MODES):
-        return super().Cs(mode)
-    
-    @classmethod
-    def Uc(cls, mode:archist.core.Mode | typing.Literal[64,"64"] = archist.core.NO_MODES):
-        return super().Uc(mode)
-    
-    class Modes:
-        _64 = archist.modes._64
-        
 
 class XCORE(archist.core.Arch):
     name = "XCORE"
@@ -2087,8 +2419,17 @@ class XCORE(archist.core.Arch):
     ql = None
 
     @classmethod
-    def Cs(cls):
-        return super().Cs(mode=archist.core.NO_MODES)
-    
+    def Cs(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        
+        
+    ):
+        return cls._Cs(
+            mode=archist.core.NO_MODES,
+            endian=endian,
+            
+        )
 
-ALL_ARCHES = [A8086, ALL, ARM, ARM64, BPF, CORTEX_M, EVM, HEXAGON, M680X, M68K, MAX, MIPS, MOS65XX, PPC, RISCV, RISCV64, S390X, SH, SPARC, SYSTEMZ, SYSZ, TMS320C64X, TRICORE, WASM, X86, X8664, XCORE]
+
+ALL_ARCHES = [A8086, ARM, ARM64, BPF, CORTEX_M, EVM, HEXAGON, M680X, M68K, MAX, MIPS, MOS65XX, PPC, RISCV, RISCV64, S390X, SH, SPARC, SYSTEMZ, SYSZ, TMS320C64X, TRICORE, WASM, X86, X8664, XCORE]

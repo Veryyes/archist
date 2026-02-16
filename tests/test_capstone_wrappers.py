@@ -12,12 +12,10 @@ from archist import (
     MOS65XX,
     PPC,
     RISCV,
-    RISCV64,
     SH,
     SPARC,
     TRICORE,
     X86,
-    X8664,
 )
 
 
@@ -42,7 +40,7 @@ class TestARMCs:
         assert cs is not None
 
     def test_mode_v8(self):
-        cs = ARM.Cs(mode="v8")
+        cs = ARM.Cs(mode="arm", v8=True)
         assert cs is not None
 
 
@@ -51,11 +49,7 @@ class TestARMCs:
 
 class TestARM64Cs:
     def test_mode_object(self):
-        cs = ARM64.Cs(mode=ARM64.Modes.arm)
-        assert cs is not None
-
-    def test_mode_string(self):
-        cs = ARM64.Cs(mode="arm")
+        cs = ARM64.Cs()
         assert cs is not None
 
 
@@ -132,23 +126,32 @@ class TestM68KCs:
 
 
 class TestMIPSCs:
-    @pytest.mark.parametrize(
-        "mode_name",
-        [
-            "mips32",
-            "mips32r6",
-            "mips64",
-            "mips3",
-            "mips2",
-            "micro",
-        ],
-    )
-    def test_mode_string(self, mode_name):
-        cs = MIPS.Cs(mode=mode_name)
+    def test_mode_mips32(self):
+        cs = MIPS.Cs(mode="mips32")
+        assert cs is not None
+
+    def test_mode_mips64(self):
+        cs = MIPS.Cs(mode="mips64")
         assert cs is not None
 
     def test_mode_object(self):
         cs = MIPS.Cs(mode=MIPS.Modes.mips32)
+        assert cs is not None
+
+    def test_micro(self):
+        cs = MIPS.Cs(mode="mips32", micro=True)
+        assert cs is not None
+
+    def test_mips2(self):
+        cs = MIPS.Cs(mode="mips32", mips2=True)
+        assert cs is not None
+
+    def test_mips3(self):
+        cs = MIPS.Cs(mode="mips32", mips3=True)
+        assert cs is not None
+
+    def test_mips32r6(self):
+        cs = MIPS.Cs(mode="mips32", mips32r6=True)
         assert cs is not None
 
 
@@ -254,12 +257,12 @@ class TestSHCs:
 
 
 class TestSPARCCs:
-    def test_mode_v9(self):
-        cs = SPARC.Cs(mode="v9")
+    def test_mode_sparc32(self):
+        cs = SPARC.Cs()
         assert cs is not None
 
-    def test_mode_object(self):
-        cs = SPARC.Cs(mode=SPARC.Modes.v9)
+    def test_v9(self):
+        cs = SPARC.Cs(v9=True)
         assert cs is not None
 
 
@@ -311,29 +314,3 @@ class TestX86Cs:
     def test_mode_object(self):
         cs = X86.Cs(mode=X86.Modes._32)
         assert cs is not None
-
-
-# ---- X8664 ----
-
-
-class TestX8664Cs:
-    def test_mode_64_int(self):
-        cs = X8664.Cs(mode=64)
-        assert cs is not None
-
-    def test_mode_64_string(self):
-        cs = X8664.Cs(mode="64")
-        assert cs is not None
-
-    def test_mode_object(self):
-        cs = X8664.Cs(mode=X8664.Modes._64)
-        assert cs is not None
-
-
-# ---- NotImplementedError tests ----
-
-
-class TestCsNotImplemented:
-    def test_riscv64_raises(self):
-        with pytest.raises(NotImplementedError):
-            RISCV64.Cs(mode="riscv64")

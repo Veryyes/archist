@@ -1,8 +1,6 @@
 """Tests for capstone-engine basic usage."""
 
-from capstone import Cs
-
-from archist import X86, X8664
+from archist import X86
 
 
 def test_disassemble_x86_32() -> None:
@@ -10,7 +8,7 @@ def test_disassemble_x86_32() -> None:
     # INC ECX; DEC EDX
     code = b"\x41\x4a"
 
-    md = Cs(X86.cs, X86.mode._32.cs)
+    md = X86.Cs(mode=32)
     instructions = list(md.disasm(code, 0x1000))
 
     assert len(instructions) == 2
@@ -25,7 +23,7 @@ def test_disassemble_x86_64() -> None:
     # NOP; RET
     code = b"\x90\xc3"
 
-    md = Cs(X8664.cs, X8664.mode._64.cs)
+    md = X86.Cs(mode=64)
     instructions = list(md.disasm(code, 0x1000))
 
     assert len(instructions) == 2

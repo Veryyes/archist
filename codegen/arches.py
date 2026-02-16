@@ -37,15 +37,44 @@ class ArchTemplate:
     cs: str
     uc: str
     ql: str
-    modes: typing.List[ModeTemplate]
     registers: typing.List[str]
+    modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    # These are modes that can be used standalone and are converted to boolean keyword parameters
+    modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
 
-    def all_mode_aliases(self) -> typing.List[str]:
-        str_aliases = {
-            f'"{m}"' if type(m) is str else m
-            for m in itertools.chain(*[m.aliases for m in self.modes])
-        }
-        return int_str_sorted(list(str_aliases))
+    ks_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    cs_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    uc_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+
+    def all_mode_aliases(
+        self, lib: typing.Literal["Ks", "Cs", "Uc"]
+    ) -> typing.Set[str]:
+        """
+        Returns a list of literal values that can be used to select the mode. Omits modifiers since they are handleded differently
+        This is used in the `Literal` type hint for the `mode` parameter of archist.core.Arch.Ks/Cs/Uc
+        """
+
+        def is_not_modifier(m: int | str) -> bool:
+            return m not in [f"{mod.name.lower()}" for mod in self.modifiers]
+
+        if lib == "Ks":
+            modes = self.ks_modes
+        elif lib == "Cs":
+            modes = self.cs_modes
+        elif lib == "Uc":
+            modes = self.uc_modes
+        else:
+            raise ValueError(f"Not a valid value for lib: {lib}")
+
+        collected_aliases: typing.Iterable[str | int] = filter(
+            is_not_modifier, itertools.chain(*[m.aliases for m in modes])
+        )
+        return int_str_sorted(
+            {
+                f'"{alias}"' if type(alias) is str else alias
+                for alias in collected_aliases
+            }
+        )
 
 
 def generate_modes() -> typing.Dict[str, ModeTemplate]:
@@ -103,6 +132,9 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
 
     arches: typing.List[ArchTemplate] = list()
     for name in arch_names:
+        if name == "ALL":
+            continue
+
         a = ArchTemplate(
             name=name,
             ks=f"keystone.KS_ARCH_{name}"
@@ -117,16 +149,65 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
             ql=f"qiling.const.QL_ARCH.{name}"
             if hasattr(qiling.const.QL_ARCH, name)
             else "None",
-            modes=list(),
             registers=generate_registers(name),
         )
         for mode in filter(lambda m: a.name in m.name, modes.values()):
             a.modes.append(mode)
 
-        # Special Cases for Mode association with their respective architecture
-        if name == "ARM64":
-            # ARM64/aarch64 but *_MODE_ARM must still be used wth it
-            a.modes.append(modes["ARM"])
+        arches.append(a)
+    arches.sort(key=lambda a: a.name)
+    special_cases(arches, modes)
+
+    # try all modes and only accept those that work
+    for a in arches:
+        for mode in a.modes:
+            for lib, constructor in [
+                ("keystone", "Ks"),
+                ("capstone", "Cs"),
+                ("unicorn", "Uc"),
+            ]:
+                mode_name = mode.name
+                if mode.name.startswith("_"):
+                    mode_name = mode.name[1:]
+
+                # Some arches & modes are lacking different endianness support
+                little = f"{lib}.{constructor}({lib}.{constructor.upper()}_ARCH_{a.name}, {lib}.{constructor.upper()}_MODE_{mode_name})"
+                big = f"{little[:-1]} | {lib}.{constructor.upper()}_MODE_BIG_ENDIAN)"
+
+                # TODO I rather dislike using eval here, but it validates which modes actually work on each arch
+                little_valid = False
+                big_valid = False
+                try:
+                    eval(little)
+                    little_valid = True
+                except Exception:
+                    pass
+
+                try:
+                    eval(big)
+                    big_valid = True
+                except Exception:
+                    pass
+
+                # if a.name == "PPC" and lib=="unicorn":
+                #     import IPython
+                #     IPython.embed()
+                if little_valid or big_valid:
+                    # TODO encode endianless validity somewhere to update type hints
+                    getattr(a, f"{constructor.lower()}_modes").append(mode)
+    return arches
+
+
+def special_cases(
+    arches: typing.List[ArchTemplate], modes: typing.Dict[str, ModeTemplate]
+) -> typing.List[ArchTemplate]:
+    # Special Cases for:
+    # - Modes that don't have the arch's name in thier const
+    # - Modifier Modes that cant be used standalone
+    # - Dealing with existing bugs or lack of support in capstone/keystone/unicorn
+
+    for a in arches:
+        name = a.name
 
         if name == "X86":
             a.modes += [modes["_16"], modes["_32"]]
@@ -136,46 +217,30 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
 
         if name == "ARM":
             a.modes += [modes["THUMB"], modes["MCLASS"], modes["V8"]]
+            a.modifiers.append(modes["V8"])
 
         if name == "MIPS":
             a.modes.append(modes["MICRO"])
+            a.modifiers += [
+                modes["MICRO"],
+                modes["MIPS2"],
+                modes["MIPS3"],
+                modes["MIPS32R6"],
+            ]
 
         if name == "SPARC":
             a.modes.append(modes["V9"])
+            a.modifiers.append(modes["V9"])
 
         if name == "PPC":
-            # BUG
+            # NOTE
             # modes["SPE"] and modes["BOOKE"] are omitted from this list because it is an invalid mode.
             # Appears to be another capstone bug or something that hasnt made its way to the latest release?
             a.modes += [modes["QPX"], modes["PS"]]
 
         if name == "MOS65XX":
-            # BUG
+            # NOTE
             # Claude says this being an invalid mode in capstone is a bug. Trying to use this will result in a CS_ERR_MODE
             a.modes.remove(modes["MOS65XX_65816"])
 
-        # Architecture special casing
-        # X86 64bit is selected by a mode. Qiling is the only one without the concept of a "mode"
-        # So, we just set X8664 to X86, except for qiling and adjust the mode accordingly
-        if name == "X8664":
-            name = "X86"
-            a.ks = (
-                f"keystone.KS_ARCH_{name}"
-                if hasattr(keystone, f"KS_ARCH_{name}")
-                else "None"
-            )
-            a.cs = (
-                f"capstone.CS_ARCH_{name}"
-                if hasattr(capstone, f"CS_ARCH_{name}")
-                else "None"
-            )
-            a.uc = (
-                f"unicorn.UC_ARCH_{name}"
-                if hasattr(unicorn, f"UC_ARCH_{name}")
-                else "None"
-            )
-            a.modes.append(modes["_64"])
-
-        arches.append(a)
-    arches.sort(key=lambda a: a.name)
     return arches

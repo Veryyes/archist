@@ -6,9 +6,12 @@ import typing
 import capstone
 import keystone
 import unicorn
+import qiling
 
 # Libraries that use a <int> type const as a fake enum
 INT_CONSTS_LIBS = [capstone, keystone, unicorn]
+
+MAIN_OBJ_LIB_LOOKUP = {"Ks": keystone, "Cs": capstone, "Uc": unicorn, "Ql": qiling}
 
 
 def getattr_regex(obj, pattern, group_no: int = 0):
