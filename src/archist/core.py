@@ -110,7 +110,7 @@ class Arch(pydantic.BaseModel):
         endian: Endian | str = LITTLE_ENDIAN,
         mode: Mode | typing.Any = NO_MODES,
         **kwargs,
-    ):
+    ) -> keystone.Ks:
         if cls.ks is None:
             raise NotImplementedError(f"No Keystone Implementation of: {cls.__name__}")
         return keystone.Ks(
@@ -132,7 +132,7 @@ class Arch(pydantic.BaseModel):
         endian: Endian | str = LITTLE_ENDIAN,
         mode: Mode | typing.Any = NO_MODES,
         **kwargs,
-    ):
+    ) -> capstone.Cs:
         if cls.cs is None:
             raise NotImplementedError(f"No Capstone Implementation of: {cls.__name__}")
         return capstone.Cs(
@@ -154,7 +154,7 @@ class Arch(pydantic.BaseModel):
         endian: Endian | str = LITTLE_ENDIAN,
         mode: Mode | typing.Any = NO_MODES,
         **kwargs,
-    ):
+    ) -> unicorn.Uc:
         if cls.uc is None:
             raise NotImplementedError(f"No Unicorn Implementation of: {cls.__name__}")
         return unicorn.Uc(
@@ -169,6 +169,11 @@ class Arch(pydantic.BaseModel):
                 ],
             ),
         )
+
+    # @classmethod
+    # def Ks_pyelftools(cls, elf: elftools.elf.elffile.ELFFile) -> keystone.Ks:
+    #     arch, endian = cls._from_pyelftools(elf)
+    #     arch._Ks(endian=endian)
 
     @classmethod
     def modes(cls) -> typing.List[Mode]:

@@ -2,3 +2,4 @@
 
 from .arches import {{ arches | map(attribute="name") | join(", ") }}
 from .core import LITTLE_ENDIAN, BIG_ENDIAN, NO_MODES
+from .extensions import Ks_pyelftools, Cs_pyelftools, Uc_pyelftools
