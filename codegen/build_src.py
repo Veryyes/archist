@@ -28,7 +28,9 @@ def main() -> None:
     output_template("modes.py.jinja", "modes.py", modes=modes)
 
     arches = generate_arches(modes)
-    output_template("arches.py.jinja", "__init__.py", arches=arches, modes=modes)
+    output_template("arches.py.jinja", "arches.py", arches=arches, modes=modes)
+
+    output_template("init.py.jinja", "__init__.py", arches=arches, modes=modes)
 
 
 if __name__ == "__main__":
