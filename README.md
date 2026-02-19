@@ -73,6 +73,24 @@ ql = Qiling(
 uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ```
 
+## Compatibility with other Libraries
+You're likely also using other libraries when doing some binary analysis
+
+### pyelftools
+Pass in the `ELFFile` to these helper functions
+```python
+from elftools.elf.elffile import ELFFile
+from archist.extensions import Ks_pyelftools, Cs_pyelftools, Uc_pyelftools
+
+with open("./binary", 'rb') as f:
+    elf = ELFFILE(f)
+
+    ks = Ks_pyelftools(elf)
+    cs = Cs_pyelftools(elf)
+    uc = Uc_pyelftools(elf)
+```
+
+
 ## Future Plans
 - Parse .slaspec files Ghidra
 - Create a class to represent Ghidra's language triples (Processor:Endianness:Bits:Compiler/Varient)
