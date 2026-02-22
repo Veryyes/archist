@@ -73,10 +73,10 @@ ql = Qiling(
 uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ```
 
-## Compatibility with other Libraries
+## Compatibility with other Tools/Libraries
 You're likely also using other libraries when doing some binary analysis
 
-### pyelftools
+### [pyelftools](https://github.com/eliben/pyelftools)
 Pass in the `ELFFile` to these helper functions
 ```python
 from elftools.elf.elffile import ELFFile
@@ -90,13 +90,25 @@ with open("./binary", 'rb') as f:
     uc = Uc_pyelftools(elf)
 ```
 
-### pwntools
+### [pwntools](https://github.com/Gallopsled/pwntools)
 pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.elffile.ELFFile`, so just use the `*_pyelftools(elf)` functions above.
 
 **NOTE:** As of writing this, the latest version of pwntools explicitly excludes the unicorn versions 2.1.3 and 2.1.4 because of an [issue](https://github.com/unicorn-engine/unicorn/issues/2134) with MIPS emulation. 2.1.4 is the latest version of unicorn and Archist its generated against that. Using an older version of unicorn with archist my result in some incompatibilities.
 
+### [LIEF](https://github.com/lief-project/LIEF)
+```python
+import lief
+from archist.extensions import Ks_lief, Cs_lief, Uc_lief
+
+elf = lief.ELF.parse("./binary")
+
+ks = Ks_lief(elf)
+cs = Cs_lief(elf)
+uc = Uc_lief(elf)
+```
 
 ## Future Plans
+- Better Qilling support
 - Parse .slaspec files Ghidra
 - Create a class to represent Ghidra's language triples (Processor:Endianness:Bits:Compiler/Varient)
 - auto create keystone, capstone, unicorn or (partially) qiling objects using Ghidra language triples
