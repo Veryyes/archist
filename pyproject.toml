@@ -30,7 +30,8 @@ dependencies = [
     "qiling",
     "pydantic",
     "lief",
-    "pyelftools"
+    "pyelftools",
+    "pyghidra"
 ]
 
 [project.optional-dependencies]
@@ -40,7 +41,8 @@ dev = [
     "pytest-cov",
     "ruff",
     "mypy",
-    "pre-commit"
+    "pre-commit",
+    "ghidra-stubs",
 ]
 
 [tool.hatch.build.targets.wheel]

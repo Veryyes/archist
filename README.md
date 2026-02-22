@@ -80,14 +80,14 @@ You're likely also using other libraries when doing some binary analysis
 Pass in the `ELFFile` to these helper functions
 ```python
 from elftools.elf.elffile import ELFFile
-from archist.extensions import Ks_pyelftools, Cs_pyelftools, Uc_pyelftools
+from archist.extensions.pyelftools import Ks, Cs, Uc
 
-with open("./binary", 'rb') as f:
-    elf = ELFFILE(f)
+with open("/bin/ls", 'rb') as f:
+    elf = ELFFile(f)
 
-    ks = Ks_pyelftools(elf)
-    cs = Cs_pyelftools(elf)
-    uc = Uc_pyelftools(elf)
+    ks = Ks(elf)
+    cs = Cs(elf)
+    uc = Uc(elf)
 ```
 
 ### [pwntools](https://github.com/Gallopsled/pwntools)
@@ -98,13 +98,13 @@ pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.
 ### [LIEF](https://github.com/lief-project/LIEF)
 ```python
 import lief
-from archist.extensions import Ks_lief, Cs_lief, Uc_lief
+from archist.extensions.lief import Ks, Cs, Uc
 
-elf = lief.ELF.parse("./binary")
+elf = lief.ELF.parse("/bin/ls")
 
-ks = Ks_lief(elf)
-cs = Cs_lief(elf)
-uc = Uc_lief(elf)
+ks = Ks(elf)
+cs = Cs(elf)
+uc = Uc(elf)
 ```
 
 ## Future Plans
