@@ -12,7 +12,7 @@ EF_SH_MACH_MASK = 0x1F
 
 
 @dataclasses.dataclass
-class ELFArchInfo:
+class BinArchInfo:
     arch: typing.Type[archist.core.Arch]
     endian: archist.core.Endian
     mode: archist.core.Mode
@@ -25,13 +25,13 @@ def resolve_elf_arch(
     elfclass: int,
     endian: archist.core.Endian,
     entrypoint: int,
-) -> ELFArchInfo:
+) -> BinArchInfo:
     match machine:
         # x86 family
         case "EM_386":
-            return ELFArchInfo(archist.X86, endian, archist.X86.Modes._32, {})
+            return BinArchInfo(archist.X86, endian, archist.X86.Modes._32, {})
         case "EM_X86_64":
-            return ELFArchInfo(archist.X86, endian, archist.X86.Modes._64, {})
+            return BinArchInfo(archist.X86, endian, archist.X86.Modes._64, {})
 
         # ARM
         case "EM_ARM":
@@ -43,10 +43,10 @@ def resolve_elf_arch(
             else:
                 mode = archist.ARM.Modes.arm
 
-            return ELFArchInfo(archist.ARM, endian, mode, kwargs)
+            return BinArchInfo(archist.ARM, endian, mode, kwargs)
 
         case "EM_AARCH64":
-            return ELFArchInfo(archist.ARM64, endian, archist.NO_MODES, {})
+            return BinArchInfo(archist.ARM64, endian, archist.NO_MODES, {})
 
         # MIPS
         case "EM_MIPS":
@@ -59,17 +59,17 @@ def resolve_elf_arch(
                 "micro": bool(e_flags & EF_MIPS_MICROMIPS),
                 "mips32r6": (e_flags & EF_MIPS_ARCH_MASK) == EF_MIPS_ARCH_32R6,
             }
-            return ELFArchInfo(archist.MIPS, endian, mode, kwargs)
+            return BinArchInfo(archist.MIPS, endian, mode, kwargs)
 
         # PowerPC
         case "EM_PPC":
-            return ELFArchInfo(archist.PPC, endian, archist.PPC.Modes.ppc32, {})
+            return BinArchInfo(archist.PPC, endian, archist.PPC.Modes.ppc32, {})
         case "EM_PPC64":
-            return ELFArchInfo(archist.PPC, endian, archist.PPC.Modes.ppc64, {})
+            return BinArchInfo(archist.PPC, endian, archist.PPC.Modes.ppc64, {})
 
         # SPARC
         case "EM_SPARC":
-            return ELFArchInfo(
+            return BinArchInfo(
                 archist.SPARC,
                 endian,
                 archist.SPARC.Modes.sparc32,
@@ -78,7 +78,7 @@ def resolve_elf_arch(
                 },
             )
         case "EM_SPARCV9":
-            return ELFArchInfo(
+            return BinArchInfo(
                 archist.SPARC,
                 endian,
                 archist.SPARC.Modes.sparc64,
@@ -91,11 +91,11 @@ def resolve_elf_arch(
                 mode = archist.RISCV.Modes.riscv64
             else:
                 mode = archist.RISCV.Modes.riscv32
-            return ELFArchInfo(archist.RISCV, endian, mode, {})
+            return BinArchInfo(archist.RISCV, endian, mode, {})
 
         # Others
         case "EM_S390":
-            return ELFArchInfo(archist.S390X, endian, archist.NO_MODES, {})
+            return BinArchInfo(archist.S390X, endian, archist.NO_MODES, {})
         case "EM_SH":
             sh_mach = e_flags & EF_SH_MACH_MASK
             sh_mode_map = {
@@ -106,11 +106,11 @@ def resolve_elf_arch(
                 0x0D: archist.SH.Modes.sh2a,
             }
             mode = sh_mode_map.get(sh_mach, archist.SH.Modes.sh4)
-            return ELFArchInfo(archist.SH, endian, mode, {})
+            return BinArchInfo(archist.SH, endian, mode, {})
         case "EM_68K":
-            return ELFArchInfo(archist.M68K, endian, archist.NO_MODES, {})
+            return BinArchInfo(archist.M68K, endian, archist.NO_MODES, {})
         case "EM_TRICORE":
-            return ELFArchInfo(archist.TRICORE, endian, archist.NO_MODES, {})
+            return BinArchInfo(archist.TRICORE, endian, archist.NO_MODES, {})
 
         case _:
             raise ValueError(f"Unsupported ELF machine type: {machine}")
@@ -123,7 +123,7 @@ def safe_mode(mode: archist.core.Mode, backend: str) -> archist.core.Mode:
     return mode
 
 
-def safe_kwargs(info: ELFArchInfo, backend: str) -> typing.Dict[str, bool]:
+def safe_kwargs(info: BinArchInfo, backend: str) -> typing.Dict[str, bool]:
     """Filter kwargs to only include modes supported by the given backend."""
     if not info.kwargs:
         return {}

@@ -4,11 +4,11 @@ import keystone
 import capstone
 import unicorn
 
-from . import safe_kwargs, safe_mode, resolve_elf_arch, ELFArchInfo
+from . import safe_kwargs, safe_mode, resolve_elf_arch, BinArchInfo
 import archist
 
 
-def _from_pyelftools(elf: elftools.elf.elffile.ELFFile) -> ELFArchInfo:
+def _from_pyelftools(elf: elftools.elf.elffile.ELFFile) -> BinArchInfo:
     return resolve_elf_arch(
         machine=elf.header.e_machine,
         e_flags=elf.header.e_flags,

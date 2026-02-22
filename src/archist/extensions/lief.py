@@ -5,7 +5,7 @@ import keystone
 import capstone
 import unicorn
 
-from . import safe_kwargs, safe_mode, resolve_elf_arch, ELFArchInfo
+from . import safe_kwargs, safe_mode, resolve_elf_arch, BinArchInfo
 import archist
 
 
@@ -28,7 +28,7 @@ _LIEF_ARCH_TO_EM: typing.Dict[lief.ELF.ARCH, str] = {
 }
 
 
-def _from_lief(binary: lief.ELF.Binary) -> ELFArchInfo:
+def _from_lief(binary: lief.ELF.Binary) -> BinArchInfo:
     machine = _LIEF_ARCH_TO_EM.get(binary.header.machine_type)
     if machine is None:
         raise ValueError(f"Unsupported ELF machine type: {binary.header.machine_type}")
