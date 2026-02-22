@@ -28,7 +28,9 @@ dependencies = [
     "capstone",
     "unicorn",
     "qiling",
-    "pydantic"
+    "pydantic",
+    "lief",
+    "pyelftools"
 ]
 
 [project.optional-dependencies]
