@@ -90,6 +90,11 @@ with open("./binary", 'rb') as f:
     uc = Uc_pyelftools(elf)
 ```
 
+### pwntools
+pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.elffile.ELFFile`, so just use the `*_pyelftools(elf)` functions above.
+
+**NOTE:** As of writing this, the latest version of pwntools explicitly excludes the unicorn versions 2.1.3 and 2.1.4 because of an [issue](https://github.com/unicorn-engine/unicorn/issues/2134) with MIPS emulation. 2.1.4 is the latest version of unicorn and Archist its generated against that. Using an older version of unicorn with archist my result in some incompatibilities.
+
 
 ## Future Plans
 - Parse .slaspec files Ghidra
