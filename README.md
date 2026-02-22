@@ -11,6 +11,7 @@
 > Why do all my imports look like copy pasta:
 ```
 
+If I want to do stuff with Capstone, Keystone and/or Unicorn it can be rather verbose:
 ```python
 # Example Code snippet
 from capstone import Cs, CS_ARCH_ARM, CS_MODE_THUMB, CS_MODE_BIG_ENDIAN
@@ -34,7 +35,7 @@ ql = Qiling(
 uc.reg_write(UC_X86_REG_EAX, 0xdeadbeef)
 ```
 
-Even better, they aren't consistent 🤮 🤢:
+Though constant values are not expected to be consistent across different libraries, these are all written by the same author and hold the same style of code. So, you may want to believe consts would have some sort of consistency across each library:
 ```python
 >>> CS_ARCH_X86
 3
@@ -46,11 +47,13 @@ Even better, they aren't consistent 🤮 🤢:
 <QL_ARCH.X86: 101>
 ```
 
-All these enums that represent the same shit about each architecture. There should just be 1 interface for this.
+All these enums that represent the information about each architecture. There should just be a single interface for this.
 
 # Archist
 
-Archist is a convenience library that maps all of these consts/enums together into a single intuitive class per architecture, such that you only need to import and use a single python object. Since a large part of the code base is generated and statically defines relationships between architectures and their properties, IDEs can autocomplete and static type checkers actually understand parts of the code base. Qiling, for example, dynamically maps in values (e.g. `ql.arch.regs.eax`), so most static type checkers would reason the type of that value to be `typing.Any`. I also personally find it annoying to import and use a crap ton of constant values like C-style preprocessor `#define`s when writing python code.
+Archist is a convenience library that maps all of these consts/enums together into a single intuitive class per architecture, such that you only need to import and use a single python object. Since a large part of the code base is generated and statically defines relationships between architectures and their properties, IDEs can autocomplete and static type checkers actually understand parts of the code base. Qiling, for example, dynamically maps in values (e.g. `ql.arch.Regs.eax`), so most static type checkers would reason the type of that value to be `typing.Any`. 
+
+I also personally find it annoying to import and use a crap ton of constant values like C-style preprocessor `#define`s when writing python code.
 
 The above example would become this with Archist:
 
@@ -74,7 +77,7 @@ uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ```
 
 ## Compatibility with other Tools/Libraries
-You're likely also using other libraries when doing some binary analysis. Pass in the "main" object used to represent your binary or program into `Ks`/`Cs`/`Uc` of the respective module you want to use. Additionally, for unicorn, these helpers do **NOT** load the binary into unicorn's emulated memory, it just spits out a `Uc` object configured for that architecture, endianness and modes if applicable.
+You're likely also using other libraries when doing some binary analysis. Pass in the "main" top level object used to represent your binary or program into `Ks`/`Cs`/`Uc` of the respective module you want to use. Additionally, for unicorn, these helpers do **NOT** load the binary into unicorn's emulated memory, it just spits out a `Uc` object configured for that architecture, endianness and modes if applicable.
 
 ### [pyelftools](https://github.com/eliben/pyelftools)
 Pass in the `ELFFile` to these helper functions
@@ -91,11 +94,12 @@ with open("/bin/ls", 'rb') as f:
 ```
 
 ### [pwntools](https://github.com/Gallopsled/pwntools)
-pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.elffile.ELFFile`, so just use the functions above.
+pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elftools.elf.elffile.ELFFile`, so just use the functions above.
 
 **NOTE:** As of writing this, the latest version of pwntools explicitly excludes the unicorn versions 2.1.3 and 2.1.4 because of an [issue](https://github.com/unicorn-engine/unicorn/issues/2134) with MIPS emulation. 2.1.4 is the latest version of unicorn and Archist its generated against that. Using an older version of unicorn with archist may result in some incompatibilities.
 
 ### [LIEF](https://github.com/lief-project/LIEF)
+Pretty similar setup to pyelftools
 ```python
 import lief
 from archist.extensions.lief import Ks, Cs, Uc
