@@ -74,7 +74,7 @@ uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ```
 
 ## Compatibility with other Tools/Libraries
-You're likely also using other libraries when doing some binary analysis
+You're likely also using other libraries when doing some binary analysis. Pass in the "main" object used to represent your binary or program into `Ks`/`Cs`/`Uc` of the respective module you want to use. Additionally, for unicorn, these helpers do **NOT** load the binary into unicorn's emulated memory, it just spits out a `Uc` object configured for that architecture, endianness and modes if applicable.
 
 ### [pyelftools](https://github.com/eliben/pyelftools)
 Pass in the `ELFFile` to these helper functions
@@ -91,7 +91,7 @@ with open("/bin/ls", 'rb') as f:
 ```
 
 ### [pwntools](https://github.com/Gallopsled/pwntools)
-pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.elffile.ELFFile`, so just use the `*_pyelftools(elf)` functions above.
+pwntools' `pwn.elf.ELF` object is just a subclass of pyelftools' `elf.tools.elf.elffile.ELFFile`, so just use the functions above.
 
 **NOTE:** As of writing this, the latest version of pwntools explicitly excludes the unicorn versions 2.1.3 and 2.1.4 because of an [issue](https://github.com/unicorn-engine/unicorn/issues/2134) with MIPS emulation. 2.1.4 is the latest version of unicorn and Archist its generated against that. Using an older version of unicorn with archist may result in some incompatibilities.
 
@@ -106,6 +106,27 @@ ks = Ks(elf)
 cs = Cs(elf)
 uc = Uc(elf)
 ```
+
+### [Ghidra](https://github.com/NationalSecurityAgency/ghidra)
+Pass in the `Program` object (from `pyghidra.program_context()`) into the helper functions
+```python
+import tempfile
+import pyghidra
+from archist.extensions.ghidra import Ks, Cs, Uc
+
+pyghidra.start()
+tmpdir = tempfile.mkdtemp()
+with pyghidra.open_project(tmpdir, "example_proj", create=True) as project:
+    loader = pyghidra.program_loader().project(project).source("/bin/ls")
+    with loader.load() as load_results:
+        load_results.save(pyghidra.task_monitor())
+        
+    with pyghidra.program_context(project, "/ls") as program:
+        ks = Ks(program)
+        cs = Cs(program)
+        uc = Uc(program)
+```
+
 
 ## Future Plans
 - Better Qilling support

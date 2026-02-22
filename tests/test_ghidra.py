@@ -7,8 +7,10 @@ import keystone
 import capstone
 import unicorn
 
+from archist.extensions.ghidra import Ks, Cs, Uc
 
 pyghidra = pytest.importorskip("pyghidra")
+
 
 # ELFs that Ghidra can load (s390x fails with "No load spec found")
 _LOADABLE_ELFS = [
@@ -141,45 +143,48 @@ def x86_64_le_program(ghidra_project):
 
 # s390x is skipped — Ghidra cannot load it ("No load spec found")
 
+# NOTE: Ghidra identifies both arm_le.elf and arm_thumb_le.elf as ARM:LE:32:v8
+# (ARM mode), so both ARM test classes expect ARM mode rather than Thumb.
+
 
 # ---- ARM (LE, ARM mode) ----
 
 
 class TestARMElf:
     def test_ks(self, arm_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(arm_le_program), keystone.Ks)
+        ks = Ks(arm_le_program)
+        assert ks._arch == keystone.KS_ARCH_ARM
+        assert ks._mode == keystone.KS_MODE_ARM | keystone.KS_MODE_LITTLE_ENDIAN
 
     def test_cs(self, arm_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(arm_le_program), capstone.Cs)
+        cs = Cs(arm_le_program)
+        assert cs.arch == capstone.CS_ARCH_ARM
+        assert cs.mode == capstone.CS_MODE_ARM | capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc(self, arm_le_program):
-        from archist.extensions.ghidra import Uc
+        uc = Uc(arm_le_program)
+        assert uc._arch == unicorn.UC_ARCH_ARM
+        assert uc._mode == unicorn.UC_MODE_ARM | unicorn.UC_MODE_LITTLE_ENDIAN
 
-        assert isinstance(Uc(arm_le_program), unicorn.Uc)
 
-
-# ---- ARM Thumb (LE) ----
+# ---- ARM Thumb (LE) — Ghidra detects as ARM mode ----
 
 
 class TestARMThumbElf:
     def test_ks(self, arm_thumb_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(arm_thumb_le_program), keystone.Ks)
+        ks = Ks(arm_thumb_le_program)
+        assert ks._arch == keystone.KS_ARCH_ARM
+        assert ks._mode == keystone.KS_MODE_ARM | keystone.KS_MODE_LITTLE_ENDIAN
 
     def test_cs(self, arm_thumb_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(arm_thumb_le_program), capstone.Cs)
+        cs = Cs(arm_thumb_le_program)
+        assert cs.arch == capstone.CS_ARCH_ARM
+        assert cs.mode == capstone.CS_MODE_ARM | capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc(self, arm_thumb_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(arm_thumb_le_program), unicorn.Uc)
+        uc = Uc(arm_thumb_le_program)
+        assert uc._arch == unicorn.UC_ARCH_ARM
+        assert uc._mode == unicorn.UC_MODE_ARM | unicorn.UC_MODE_LITTLE_ENDIAN
 
 
 # ---- AArch64 (LE) ----
@@ -187,19 +192,19 @@ class TestARMThumbElf:
 
 class TestAArch64Elf:
     def test_ks(self, aarch64_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(aarch64_le_program), keystone.Ks)
+        ks = Ks(aarch64_le_program)
+        assert ks._arch == keystone.KS_ARCH_ARM64
+        assert ks._mode == keystone.KS_MODE_LITTLE_ENDIAN
 
     def test_cs(self, aarch64_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(aarch64_le_program), capstone.Cs)
+        cs = Cs(aarch64_le_program)
+        assert cs.arch == capstone.CS_ARCH_ARM64
+        assert cs.mode == capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc(self, aarch64_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(aarch64_le_program), unicorn.Uc)
+        uc = Uc(aarch64_le_program)
+        assert uc._arch == unicorn.UC_ARCH_ARM64
+        assert uc._mode == unicorn.UC_MODE_LITTLE_ENDIAN
 
 
 # ---- MIPS32 (BE) ----
@@ -207,19 +212,19 @@ class TestAArch64Elf:
 
 class TestMIPS32BEElf:
     def test_ks(self, mips32_be_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(mips32_be_program), keystone.Ks)
+        ks = Ks(mips32_be_program)
+        assert ks._arch == keystone.KS_ARCH_MIPS
+        assert ks._mode == keystone.KS_MODE_MIPS32 | keystone.KS_MODE_BIG_ENDIAN
 
     def test_cs(self, mips32_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(mips32_be_program), capstone.Cs)
+        cs = Cs(mips32_be_program)
+        assert cs.arch == capstone.CS_ARCH_MIPS
+        assert cs.mode == capstone.CS_MODE_MIPS32 | capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, mips32_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(mips32_be_program), unicorn.Uc)
+        uc = Uc(mips32_be_program)
+        assert uc._arch == unicorn.UC_ARCH_MIPS
+        assert uc._mode == unicorn.UC_MODE_MIPS32 | unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- MIPS32 (LE) ----
@@ -227,19 +232,19 @@ class TestMIPS32BEElf:
 
 class TestMIPS32LEElf:
     def test_ks(self, mips32_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(mips32_le_program), keystone.Ks)
+        ks = Ks(mips32_le_program)
+        assert ks._arch == keystone.KS_ARCH_MIPS
+        assert ks._mode == keystone.KS_MODE_MIPS32 | keystone.KS_MODE_LITTLE_ENDIAN
 
     def test_cs(self, mips32_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(mips32_le_program), capstone.Cs)
+        cs = Cs(mips32_le_program)
+        assert cs.arch == capstone.CS_ARCH_MIPS
+        assert cs.mode == capstone.CS_MODE_MIPS32 | capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc(self, mips32_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(mips32_le_program), unicorn.Uc)
+        uc = Uc(mips32_le_program)
+        assert uc._arch == unicorn.UC_ARCH_MIPS
+        assert uc._mode == unicorn.UC_MODE_MIPS32 | unicorn.UC_MODE_LITTLE_ENDIAN
 
 
 # ---- MIPS64 (BE) ----
@@ -247,19 +252,19 @@ class TestMIPS32LEElf:
 
 class TestMIPS64BEElf:
     def test_ks(self, mips64_be_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(mips64_be_program), keystone.Ks)
+        ks = Ks(mips64_be_program)
+        assert ks._arch == keystone.KS_ARCH_MIPS
+        assert ks._mode == keystone.KS_MODE_MIPS64 | keystone.KS_MODE_BIG_ENDIAN
 
     def test_cs(self, mips64_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(mips64_be_program), capstone.Cs)
+        cs = Cs(mips64_be_program)
+        assert cs.arch == capstone.CS_ARCH_MIPS
+        assert cs.mode == capstone.CS_MODE_MIPS64 | capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, mips64_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(mips64_be_program), unicorn.Uc)
+        uc = Uc(mips64_be_program)
+        assert uc._arch == unicorn.UC_ARCH_MIPS
+        assert uc._mode == unicorn.UC_MODE_MIPS64 | unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- PPC32 (BE) ----
@@ -267,19 +272,19 @@ class TestMIPS64BEElf:
 
 class TestPPC32Elf:
     def test_ks(self, ppc32_be_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(ppc32_be_program), keystone.Ks)
+        ks = Ks(ppc32_be_program)
+        assert ks._arch == keystone.KS_ARCH_PPC
+        assert ks._mode == keystone.KS_MODE_PPC32 | keystone.KS_MODE_BIG_ENDIAN
 
     def test_cs(self, ppc32_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(ppc32_be_program), capstone.Cs)
+        cs = Cs(ppc32_be_program)
+        assert cs.arch == capstone.CS_ARCH_PPC
+        assert cs.mode == capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, ppc32_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(ppc32_be_program), unicorn.Uc)
+        uc = Uc(ppc32_be_program)
+        assert uc._arch == unicorn.UC_ARCH_PPC
+        assert uc._mode == unicorn.UC_MODE_PPC32 | unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- PPC64 (BE) ----
@@ -287,19 +292,19 @@ class TestPPC32Elf:
 
 class TestPPC64Elf:
     def test_ks(self, ppc64_be_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(ppc64_be_program), keystone.Ks)
+        ks = Ks(ppc64_be_program)
+        assert ks._arch == keystone.KS_ARCH_PPC
+        assert ks._mode == keystone.KS_MODE_PPC64 | keystone.KS_MODE_BIG_ENDIAN
 
     def test_cs(self, ppc64_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(ppc64_be_program), capstone.Cs)
+        cs = Cs(ppc64_be_program)
+        assert cs.arch == capstone.CS_ARCH_PPC
+        assert cs.mode == capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, ppc64_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(ppc64_be_program), unicorn.Uc)
+        uc = Uc(ppc64_be_program)
+        assert uc._arch == unicorn.UC_ARCH_PPC
+        assert uc._mode == unicorn.UC_MODE_PPC64 | unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- SPARC64 (BE) ----
@@ -307,19 +312,19 @@ class TestPPC64Elf:
 
 class TestSPARC64Elf:
     def test_ks(self, sparc64_be_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(sparc64_be_program), keystone.Ks)
+        ks = Ks(sparc64_be_program)
+        assert ks._arch == keystone.KS_ARCH_SPARC
+        assert ks._mode == keystone.KS_MODE_SPARC64 | keystone.KS_MODE_BIG_ENDIAN
 
     def test_cs(self, sparc64_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(sparc64_be_program), capstone.Cs)
+        cs = Cs(sparc64_be_program)
+        assert cs.arch == capstone.CS_ARCH_SPARC
+        assert cs.mode == capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, sparc64_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(sparc64_be_program), unicorn.Uc)
+        uc = Uc(sparc64_be_program)
+        assert uc._arch == unicorn.UC_ARCH_SPARC
+        assert uc._mode == unicorn.UC_MODE_SPARC64 | unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- RISC-V 64 (LE) — no Ks support ----
@@ -327,20 +332,18 @@ class TestSPARC64Elf:
 
 class TestRISCV64Elf:
     def test_ks_not_implemented(self, riscv64_le_program):
-        from archist.extensions.ghidra import Ks
-
         with pytest.raises(NotImplementedError):
             Ks(riscv64_le_program)
 
     def test_cs(self, riscv64_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(riscv64_le_program), capstone.Cs)
+        cs = Cs(riscv64_le_program)
+        assert cs.arch == capstone.CS_ARCH_RISCV
+        assert cs.mode == capstone.CS_MODE_RISCV64 | capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc(self, riscv64_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(riscv64_le_program), unicorn.Uc)
+        uc = Uc(riscv64_le_program)
+        assert uc._arch == unicorn.UC_ARCH_RISCV
+        assert uc._mode == unicorn.UC_MODE_RISCV64 | unicorn.UC_MODE_LITTLE_ENDIAN
 
 
 # ---- M68K (BE) — no Ks support ----
@@ -348,20 +351,18 @@ class TestRISCV64Elf:
 
 class TestM68KElf:
     def test_ks_not_implemented(self, m68k_be_program):
-        from archist.extensions.ghidra import Ks
-
         with pytest.raises(NotImplementedError):
             Ks(m68k_be_program)
 
     def test_cs(self, m68k_be_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(m68k_be_program), capstone.Cs)
+        cs = Cs(m68k_be_program)
+        assert cs.arch == capstone.CS_ARCH_M68K
+        assert cs.mode == capstone.CS_MODE_BIG_ENDIAN
 
     def test_uc(self, m68k_be_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(m68k_be_program), unicorn.Uc)
+        uc = Uc(m68k_be_program)
+        assert uc._arch == unicorn.UC_ARCH_M68K
+        assert uc._mode == unicorn.UC_MODE_BIG_ENDIAN
 
 
 # ---- SH4 (LE) — Cs only ----
@@ -369,19 +370,15 @@ class TestM68KElf:
 
 class TestSH4Elf:
     def test_ks_not_implemented(self, sh4_le_program):
-        from archist.extensions.ghidra import Ks
-
         with pytest.raises(NotImplementedError):
             Ks(sh4_le_program)
 
     def test_cs(self, sh4_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(sh4_le_program), capstone.Cs)
+        cs = Cs(sh4_le_program)
+        assert cs.arch == capstone.CS_ARCH_SH
+        assert cs.mode == capstone.CS_MODE_SH4 | capstone.CS_MODE_LITTLE_ENDIAN
 
     def test_uc_not_implemented(self, sh4_le_program):
-        from archist.extensions.ghidra import Uc
-
         with pytest.raises(NotImplementedError):
             Uc(sh4_le_program)
 
@@ -391,19 +388,19 @@ class TestSH4Elf:
 
 class TestX86_32Elf:
     def test_ks(self, x86_32_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(x86_32_le_program), keystone.Ks)
+        ks = Ks(x86_32_le_program)
+        assert ks._arch == keystone.KS_ARCH_X86
+        assert ks._mode == keystone.KS_MODE_32
 
     def test_cs(self, x86_32_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(x86_32_le_program), capstone.Cs)
+        cs = Cs(x86_32_le_program)
+        assert cs.arch == capstone.CS_ARCH_X86
+        assert cs.mode == capstone.CS_MODE_32
 
     def test_uc(self, x86_32_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(x86_32_le_program), unicorn.Uc)
+        uc = Uc(x86_32_le_program)
+        assert uc._arch == unicorn.UC_ARCH_X86
+        assert uc._mode == unicorn.UC_MODE_32
 
 
 # ---- X86-64 (LE) ----
@@ -411,16 +408,16 @@ class TestX86_32Elf:
 
 class TestX86_64Elf:
     def test_ks(self, x86_64_le_program):
-        from archist.extensions.ghidra import Ks
-
-        assert isinstance(Ks(x86_64_le_program), keystone.Ks)
+        ks = Ks(x86_64_le_program)
+        assert ks._arch == keystone.KS_ARCH_X86
+        assert ks._mode == keystone.KS_MODE_64
 
     def test_cs(self, x86_64_le_program):
-        from archist.extensions.ghidra import Cs
-
-        assert isinstance(Cs(x86_64_le_program), capstone.Cs)
+        cs = Cs(x86_64_le_program)
+        assert cs.arch == capstone.CS_ARCH_X86
+        assert cs.mode == capstone.CS_MODE_64
 
     def test_uc(self, x86_64_le_program):
-        from archist.extensions.ghidra import Uc
-
-        assert isinstance(Uc(x86_64_le_program), unicorn.Uc)
+        uc = Uc(x86_64_le_program)
+        assert uc._arch == unicorn.UC_ARCH_X86
+        assert uc._mode == unicorn.UC_MODE_64
