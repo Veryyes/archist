@@ -3,6 +3,7 @@ dist/
 *.egg-info/
 *.pyc
 __pycache__/
+.vscode/
 CLAUDE.md
 ghidra_*
 tests/fixtures/
