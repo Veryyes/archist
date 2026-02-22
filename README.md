@@ -131,7 +131,5 @@ with pyghidra.open_project(tmpdir, "example_proj", create=True) as project:
 ## Future Plans
 - Better Qilling support
 - Parse .slaspec files Ghidra
-- Create a class to represent Ghidra's language triples (Processor:Endianness:Bits:Compiler/Varient)
-- auto create keystone, capstone, unicorn or (partially) qiling objects using Ghidra language triples
 - Add compatibiltiy with angr/archinfo
 - Reverse lookup (i.e. capstone.CS_ARCH_ARM -> archist.ARM)
