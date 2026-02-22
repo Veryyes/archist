@@ -79,6 +79,38 @@ uc.reg_write(X86.Regs.eax, 0xdeadbeef)
 ## Compatibility with other Tools/Libraries
 You're likely also using other libraries when doing some binary analysis. Pass in the "main" top level object used to represent your binary or program into `Ks`/`Cs`/`Uc` of the respective module you want to use. Additionally, for unicorn, these helpers do **NOT** load the binary into unicorn's emulated memory, it just spits out a `Uc` object configured for that architecture, endianness and modes if applicable.
 
+### [Ghidra](https://github.com/NationalSecurityAgency/ghidra)
+Pass in the `Program` object (from `pyghidra.program_context()`) into the helper functions
+```python
+import tempfile
+import pyghidra
+from archist.extensions.ghidra import Ks, Cs, Uc
+
+pyghidra.start()
+tmpdir = tempfile.mkdtemp()
+with pyghidra.open_project(tmpdir, "example_proj", create=True) as project:
+    loader = pyghidra.program_loader().project(project).source("/bin/ls")
+    with loader.load() as load_results:
+        load_results.save(pyghidra.task_monitor())
+        
+    with pyghidra.program_context(project, "/ls") as program:
+        ks = Ks(program)
+        cs = Cs(program)
+        uc = Uc(program)
+```
+
+### [Binary Ninja](https://binary.ninja/)
+Requires you have the Binary Ninja (duh). Pass in `binaryninja.BinaryView` to the helper functions
+```python
+import binaryninja as bn
+from archist.extensions.binja import Ks, Cs, Uc
+
+with bn.load("/bin/ls") as bv:
+    ks = Ks(bv)
+    cs = Cs(bv)
+    uc = Uc(bv)
+```
+
 ### [pyelftools](https://github.com/eliben/pyelftools)
 Pass in the `ELFFile` to these helper functions
 ```python
@@ -111,29 +143,9 @@ cs = Cs(elf)
 uc = Uc(elf)
 ```
 
-### [Ghidra](https://github.com/NationalSecurityAgency/ghidra)
-Pass in the `Program` object (from `pyghidra.program_context()`) into the helper functions
-```python
-import tempfile
-import pyghidra
-from archist.extensions.ghidra import Ks, Cs, Uc
-
-pyghidra.start()
-tmpdir = tempfile.mkdtemp()
-with pyghidra.open_project(tmpdir, "example_proj", create=True) as project:
-    loader = pyghidra.program_loader().project(project).source("/bin/ls")
-    with loader.load() as load_results:
-        load_results.save(pyghidra.task_monitor())
-        
-    with pyghidra.program_context(project, "/ls") as program:
-        ks = Ks(program)
-        cs = Cs(program)
-        uc = Uc(program)
-```
-
-
 ## Future Plans
 - Better Qilling support
+- Test support for not ELF files and implement if needed
 - Parse .slaspec files Ghidra
 - Add compatibiltiy with angr/archinfo
 - Reverse lookup (i.e. capstone.CS_ARCH_ARM -> archist.ARM)
