@@ -123,6 +123,9 @@ def _from_ghidra(program: ghidra.program.model.listing.Program) -> BinArchInfo:
     lang_id = lang.getLanguageID().toString()
     parts = lang_id.split(":")
 
+    if len(parts) < 3:
+        raise ValueError(f"Unexpected LanguageID format: {lang_id!r}")
+
     processor = parts[0]
     endian_str = parts[1]
     size = int(parts[2])

@@ -79,11 +79,11 @@ class ARM(archist.core.Arch):
         )
 
     class Modes:
-        arm946 = archist.modes.ARM946
         armbe8 = archist.modes.ARMBE8
-        arm1176 = archist.modes.ARM1176
-        arm = archist.modes.ARM
+        arm946 = archist.modes.ARM946
         arm926 = archist.modes.ARM926
+        arm = archist.modes.ARM
+        arm1176 = archist.modes.ARM1176
         thumb = archist.modes.THUMB
         mclass = archist.modes.MCLASS
         v8 = archist.modes.V8
@@ -687,16 +687,16 @@ class M680X(archist.core.Arch):
         )
 
     class Modes:
-        m680x_6800 = archist.modes.M680X_6800
-        m680x_6309 = archist.modes.M680X_6309
-        m680x_hcs08 = archist.modes.M680X_HCS08
         m680x_6811 = archist.modes.M680X_6811
+        m680x_6309 = archist.modes.M680X_6309
         m680x_6809 = archist.modes.M680X_6809
-        m680x_6301 = archist.modes.M680X_6301
-        m680x_6801 = archist.modes.M680X_6801
         m680x_cpu12 = archist.modes.M680X_CPU12
-        m680x_6808 = archist.modes.M680X_6808
         m680x_6805 = archist.modes.M680X_6805
+        m680x_6301 = archist.modes.M680X_6301
+        m680x_6800 = archist.modes.M680X_6800
+        m680x_6808 = archist.modes.M680X_6808
+        m680x_hcs08 = archist.modes.M680X_HCS08
+        m680x_6801 = archist.modes.M680X_6801
 
 
 class M68K(archist.core.Arch):
@@ -731,12 +731,12 @@ class M68K(archist.core.Arch):
         )
 
     class Modes:
-        m68k_010 = archist.modes.M68K_010
-        m68k_000 = archist.modes.M68K_000
         m68k_040 = archist.modes.M68K_040
-        m68k_030 = archist.modes.M68K_030
-        m68k_020 = archist.modes.M68K_020
         m68k_060 = archist.modes.M68K_060
+        m68k_030 = archist.modes.M68K_030
+        m68k_000 = archist.modes.M68K_000
+        m68k_010 = archist.modes.M68K_010
+        m68k_020 = archist.modes.M68K_020
 
     class Regs:
         a0 = unicorn.m68k_const.UC_M68K_REG_A0
@@ -882,10 +882,10 @@ class MIPS(archist.core.Arch):
         )
 
     class Modes:
-        mips64 = archist.modes.MIPS64
-        mips3 = archist.modes.MIPS3
         mips2 = archist.modes.MIPS2
+        mips64 = archist.modes.MIPS64
         mips32 = archist.modes.MIPS32
+        mips3 = archist.modes.MIPS3
         mips32r6 = archist.modes.MIPS32R6
         micro = archist.modes.MICRO
 
@@ -1071,12 +1071,12 @@ class MOS65XX(archist.core.Arch):
         )
 
     class Modes:
-        mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
         mos65xx_65816_long_m = archist.modes.MOS65XX_65816_LONG_M
-        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
         mos65xx_6502 = archist.modes.MOS65XX_6502
-        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
+        mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
         mos65xx_65c02 = archist.modes.MOS65XX_65C02
+        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
+        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
 
 
 class PPC(archist.core.Arch):
@@ -1245,9 +1245,9 @@ class RISCV(archist.core.Arch):
         )
 
     class Modes:
-        riscv32 = archist.modes.RISCV32
         riscvc = archist.modes.RISCVC
         riscv64 = archist.modes.RISCV64
+        riscv32 = archist.modes.RISCV32
 
     class Regs:
         a0 = unicorn.riscv_const.UC_RISCV_REG_A0
@@ -1680,13 +1680,13 @@ class SH(archist.core.Arch):
         )
 
     class Modes:
-        sh2 = archist.modes.SH2
-        shfpu = archist.modes.SHFPU
-        sh4a = archist.modes.SH4A
-        sh2a = archist.modes.SH2A
-        shdsp = archist.modes.SHDSP
         sh3 = archist.modes.SH3
+        shfpu = archist.modes.SHFPU
+        shdsp = archist.modes.SHDSP
         sh4 = archist.modes.SH4
+        sh4a = archist.modes.SH4A
+        sh2 = archist.modes.SH2
+        sh2a = archist.modes.SH2A
 
 
 class SPARC(archist.core.Arch):
@@ -1929,13 +1929,13 @@ class TRICORE(archist.core.Arch):
         )
 
     class Modes:
-        tricore_110 = archist.modes.TRICORE_110
-        tricore_162 = archist.modes.TRICORE_162
         tricore_130 = archist.modes.TRICORE_130
+        tricore_162 = archist.modes.TRICORE_162
         tricore_131 = archist.modes.TRICORE_131
-        tricore_161 = archist.modes.TRICORE_161
         tricore_160 = archist.modes.TRICORE_160
         tricore_120 = archist.modes.TRICORE_120
+        tricore_161 = archist.modes.TRICORE_161
+        tricore_110 = archist.modes.TRICORE_110
 
     class Regs:
         a0 = unicorn.tricore_const.UC_TRICORE_REG_A0

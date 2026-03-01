@@ -35,15 +35,13 @@ def resolve_elf_arch(
 
         # ARM
         case "EM_ARM":
-            kwargs: dict[str, bool] = {"v8": False}
-
             # Detect Thumb via entry point bit 0
             if entrypoint & 1:
                 mode = archist.ARM.Modes.thumb
             else:
                 mode = archist.ARM.Modes.arm
 
-            return BinArchInfo(archist.ARM, endian, mode, kwargs)
+            return BinArchInfo(archist.ARM, endian, mode, {})
 
         case "EM_AARCH64":
             return BinArchInfo(archist.ARM64, endian, archist.NO_MODES, {})

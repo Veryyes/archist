@@ -1,6 +1,7 @@
 """Tests for archist.extensions.ghidra using real ELF binaries loaded via pyghidra."""
 
 import tempfile
+import shutil
 
 import pytest
 import keystone
@@ -37,17 +38,20 @@ def ghidra_project(elf_fixtures):
     pyghidra.start()
     from ghidra.util.task import TaskMonitor
 
-    tmpdir = tempfile.mkdtemp()
-    project = pyghidra.open_project(tmpdir, "archist_test", create=True)
+    try:
+        tmpdir = tempfile.mkdtemp()
+        project = pyghidra.open_project(tmpdir, "archist_test", create=True)
 
-    for name in _LOADABLE_ELFS:
-        elf_path = str((elf_fixtures / name).resolve())
-        result = pyghidra.program_loader().project(project).source(elf_path).load()
-        result.save(TaskMonitor.DUMMY)
-        result.release(None)
+        for name in _LOADABLE_ELFS:
+            elf_path = str((elf_fixtures / name).resolve())
+            result = pyghidra.program_loader().project(project).source(elf_path).load()
+            result.save(TaskMonitor.DUMMY)
+            result.release(None)
 
-    yield project
-    project.close()
+        yield project
+    finally:
+        project.close()
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 def _program(ghidra_project, name):

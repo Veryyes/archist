@@ -65,7 +65,7 @@ def elf_fixtures() -> pathlib.Path:
             check=True,
         )
     finally:
-        subprocess.run(["docker", "rm", container_id], check=True)
+        subprocess.run(["docker", "rm", container_id], check=False)
 
     missing = [name for name in EXPECTED_ELFS if not (FIXTURES_DIR / name).exists()]
     if missing:

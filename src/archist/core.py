@@ -174,6 +174,3 @@ class Arch(pydantic.BaseModel):
         return [
             m for m_name, m in vars(cls.Modes).items() if not m_name.startswith("_")
         ]
-
-    def __hash__(self) -> int:
-        return hash(self.name)

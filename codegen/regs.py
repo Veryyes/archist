@@ -49,7 +49,7 @@ def generate_registers(arch: str) -> typing.Dict[str, str]:
         name: f"{module_name}.UC_{arch}_REG_{name}" for name in regs.keys()
     }  # ugh i hate this line
 
-    # Special case for MIPS and PCC
+    # Special case for MIPS and PPC
     # These arches use numbers as their register names (which is retarded) and can't be used as python variable names
     if arch.lower() == "mips":
         # For MIPS:
