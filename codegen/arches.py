@@ -10,8 +10,11 @@ import keystone
 import unicorn
 import qiling.const
 
-from util import getattr_regex, non_dunder_members, INT_CONSTS_LIBS
+from utils import getattr_regex, non_dunder_members, INT_CONSTS_LIBS
 from regs import generate_registers
+
+LibName = typing.Literal["keystone", "capstone", "unicorn"]
+ConstructorName = typing.Literal["Ks", "Cs", "Uc"]
 
 
 def int_str_sorted(items):
@@ -40,15 +43,14 @@ class ArchTemplate:
     registers: typing.List[str]
     modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
     # These are modes that can be used standalone and are converted to boolean keyword parameters
+    # TODO create ks/cs/uc specific modifiers
     modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
 
     ks_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
     cs_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
     uc_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
 
-    def all_mode_aliases(
-        self, lib: typing.Literal["Ks", "Cs", "Uc"]
-    ) -> typing.Set[str]:
+    def all_mode_aliases(self, lib: ConstructorName) -> typing.Set[str]:
         """
         Returns a list of literal values that can be used to select the mode. Omits modifiers since they are handleded differently
         This is used in the `Literal` type hint for the `mode` parameter of archist.core.Arch.Ks/Cs/Uc
@@ -161,11 +163,13 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
     # try all modes and only accept those that work
     for a in arches:
         for mode in a.modes:
-            for lib, constructor in [
+            # Using type alias, so static type checkers know that LibName and ConstructorName are just string literals
+            pairs: typing.List[typing.Tuple[LibName, ConstructorName]] = [
                 ("keystone", "Ks"),
                 ("capstone", "Cs"),
                 ("unicorn", "Uc"),
-            ]:
+            ]
+            for lib, constructor in pairs:
                 mode_name = mode.name
                 if mode.name.startswith("_"):
                     mode_name = mode.name[1:]
@@ -174,7 +178,9 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
                 little = f"{lib}.{constructor}({lib}.{constructor.upper()}_ARCH_{a.name}, {lib}.{constructor.upper()}_MODE_{mode_name})"
                 big = f"{little[:-1]} | {lib}.{constructor.upper()}_MODE_BIG_ENDIAN)"
 
-                # TODO I rather dislike using eval here, but it validates which modes actually work on each arch
+                # BUG/VULN Possible python code injection if keystone/capstone/unicorn (or malicously crafted packages have those names) have malicous variable names for thier constants
+                # But you're also importing those libraries anyways, so GG if they are bad packages...
+                # I rather dislike using eval here, but it validates which modes actually work on each arch and its a one-liner
                 little_valid = False
                 big_valid = False
                 try:
@@ -189,12 +195,11 @@ def generate_arches(modes: typing.Dict[str, ModeTemplate]) -> typing.List[ArchTe
                 except Exception:
                     pass
 
-                # if a.name == "PPC" and lib=="unicorn":
-                #     import IPython
-                #     IPython.embed()
                 if little_valid or big_valid:
                     # TODO encode endianless validity somewhere to update type hints
-                    getattr(a, f"{constructor.lower()}_modes").append(mode)
+                    mode_list = getattr(a, f"{constructor.lower()}_modes")
+                    assert isinstance(mode_list, list)
+                    mode_list.append(mode)
     return arches
 
 

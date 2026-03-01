@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 import typing
 
 import keystone
@@ -54,7 +53,7 @@ def _from_binja(bv: binaryninja.BinaryView) -> BinArchInfo:
         print(
             f"{e} Could not import binaryninja. Do you have the API installed? EXITING"
         )
-        sys.exit(1)
+        raise e
 
     arch_name = bv.arch.name
     endian = (

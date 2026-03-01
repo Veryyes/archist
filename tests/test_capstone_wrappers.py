@@ -1,5 +1,6 @@
 """Tests for Capstone wrapper (.Cs()) creation on all architecture classes."""
 
+import capstone
 import pytest
 
 from archist import (
@@ -41,7 +42,7 @@ class TestARMCs:
 
     def test_mode_v8(self):
         cs = ARM.Cs(mode="arm", v8=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_V8
 
 
 # ---- ARM64 ----
@@ -140,19 +141,19 @@ class TestMIPSCs:
 
     def test_micro(self):
         cs = MIPS.Cs(mode="mips32", micro=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_MICRO
 
     def test_mips2(self):
         cs = MIPS.Cs(mode="mips32", mips2=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_MIPS2
 
     def test_mips3(self):
         cs = MIPS.Cs(mode="mips32", mips3=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_MIPS3
 
     def test_mips32r6(self):
         cs = MIPS.Cs(mode="mips32", mips32r6=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_MIPS32R6
 
 
 # ---- MOS65XX ----
@@ -263,7 +264,7 @@ class TestSPARCCs:
 
     def test_v9(self):
         cs = SPARC.Cs(v9=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_V9
 
 
 # ---- TRICORE ----

@@ -9,8 +9,18 @@ from elftools.elf.elffile import ELFFile
 from archist.extensions.pyelftools import Ks, Cs, Uc
 
 
-def _open_elf(path):
-    return ELFFile(open(path, "rb"))
+@pytest.fixture
+def open_elf(elf_fixtures):
+    opened = []
+
+    def _open(name):
+        f = open(elf_fixtures / name, "rb")
+        opened.append(f)
+        return ELFFile(f)
+
+    yield _open
+    for f in opened:
+        f.close()
 
 
 # ---- ARM (LE, ARM mode) ----
@@ -18,8 +28,8 @@ def _open_elf(path):
 
 class TestARMElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "arm_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("arm_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -42,8 +52,8 @@ class TestARMElf:
 
 class TestARMThumbElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "arm_thumb_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("arm_thumb_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -66,8 +76,8 @@ class TestARMThumbElf:
 
 class TestAArch64Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "aarch64_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("aarch64_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -90,8 +100,8 @@ class TestAArch64Elf:
 
 class TestMIPS32BEElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "mips32_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("mips32_be.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -114,8 +124,8 @@ class TestMIPS32BEElf:
 
 class TestMIPS32LEElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "mips32_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("mips32_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -138,8 +148,8 @@ class TestMIPS32LEElf:
 
 class TestMIPS64BEElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "mips64_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("mips64_be.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -162,8 +172,8 @@ class TestMIPS64BEElf:
 
 class TestPPC32Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "ppc32_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("ppc32_be.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -186,8 +196,8 @@ class TestPPC32Elf:
 
 class TestPPC64Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "ppc64_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("ppc64_be.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -210,8 +220,8 @@ class TestPPC64Elf:
 
 class TestSPARC64Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "sparc64_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("sparc64_be.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -234,8 +244,8 @@ class TestSPARC64Elf:
 
 class TestRISCV64Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "riscv64_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("riscv64_le.elf")
 
     def test_ks_not_implemented(self):
         with pytest.raises(NotImplementedError):
@@ -257,8 +267,8 @@ class TestRISCV64Elf:
 
 class TestM68KElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "m68k_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("m68k_be.elf")
 
     def test_ks_not_implemented(self):
         with pytest.raises(NotImplementedError):
@@ -280,8 +290,8 @@ class TestM68KElf:
 
 class TestSH4Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "sh4_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("sh4_le.elf")
 
     def test_ks_not_implemented(self):
         with pytest.raises(NotImplementedError):
@@ -302,8 +312,8 @@ class TestSH4Elf:
 
 class TestS390XElf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "s390x_be.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("s390x_be.elf")
 
     def test_ks_not_implemented(self):
         with pytest.raises(NotImplementedError):
@@ -324,8 +334,8 @@ class TestS390XElf:
 
 class TestX86_32Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "x86_32_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("x86_32_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)
@@ -348,8 +358,8 @@ class TestX86_32Elf:
 
 class TestX86_64Elf:
     @pytest.fixture(autouse=True)
-    def setup(self, elf_fixtures):
-        self.elf = _open_elf(elf_fixtures / "x86_64_le.elf")
+    def setup(self, open_elf):
+        self.elf = open_elf("x86_64_le.elf")
 
     def test_ks(self):
         ks = Ks(self.elf)

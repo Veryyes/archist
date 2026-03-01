@@ -18,60 +18,11 @@ import archist.core
 # ARCHITECTURE MODES/VARIANTS #
 ###############################
 
-M680X_HCS08 = archist.core.Mode(
-    name = "M680X_HCS08",
-    ks = None,
-    cs = capstone.CS_MODE_M680X_HCS08,
-    uc = None
-)
-
-MIPS32 = archist.core.Mode(
-    name = "MIPS32",
-    ks = keystone.KS_MODE_MIPS32,
-    cs = capstone.CS_MODE_MIPS32,
-    uc = unicorn.UC_MODE_MIPS32
-)
-
-SH3 = archist.core.Mode(
-    name = "SH3",
-    ks = None,
-    cs = capstone.CS_MODE_SH3,
-    uc = None
-)
-
-M68K_020 = archist.core.Mode(
-    name = "M68K_020",
-    ks = None,
-    cs = capstone.CS_MODE_M68K_020,
-    uc = None
-)
-
-TRICORE_162 = archist.core.Mode(
-    name = "TRICORE_162",
-    ks = None,
-    cs = capstone.CS_MODE_TRICORE_162,
-    uc = None
-)
-
-RISCV64 = archist.core.Mode(
-    name = "RISCV64",
-    ks = None,
-    cs = capstone.CS_MODE_RISCV64,
-    uc = unicorn.UC_MODE_RISCV64
-)
-
-BPF_CLASSIC = archist.core.Mode(
-    name = "BPF_CLASSIC",
-    ks = None,
-    cs = capstone.CS_MODE_BPF_CLASSIC,
-    uc = None
-)
-
-SPARC64 = archist.core.Mode(
-    name = "SPARC64",
-    ks = keystone.KS_MODE_SPARC64,
-    cs = None,
-    uc = unicorn.UC_MODE_SPARC64
+QPX = archist.core.Mode(
+    name = "QPX",
+    ks = keystone.KS_MODE_QPX,
+    cs = capstone.CS_MODE_QPX,
+    uc = unicorn.UC_MODE_QPX
 )
 
 TRICORE_110 = archist.core.Mode(
@@ -81,109 +32,25 @@ TRICORE_110 = archist.core.Mode(
     uc = None
 )
 
-_64 = archist.core.Mode(
-    name = "_64",
-    ks = keystone.KS_MODE_64,
-    cs = capstone.CS_MODE_64,
-    uc = unicorn.UC_MODE_64
-)
-
-MOS65XX_6502 = archist.core.Mode(
-    name = "MOS65XX_6502",
-    ks = None,
-    cs = capstone.CS_MODE_MOS65XX_6502,
-    uc = None
-)
-
-BPF_EXTENDED = archist.core.Mode(
-    name = "BPF_EXTENDED",
-    ks = None,
-    cs = capstone.CS_MODE_BPF_EXTENDED,
-    uc = None
-)
-
-MOS65XX_65816 = archist.core.Mode(
-    name = "MOS65XX_65816",
-    ks = None,
-    cs = capstone.CS_MODE_MOS65XX_65816,
-    uc = None
-)
-
-TRICORE_120 = archist.core.Mode(
-    name = "TRICORE_120",
-    ks = None,
-    cs = capstone.CS_MODE_TRICORE_120,
-    uc = None
-)
-
-M680X_6811 = archist.core.Mode(
-    name = "M680X_6811",
-    ks = None,
-    cs = capstone.CS_MODE_M680X_6811,
-    uc = None
-)
-
-MIPS2 = archist.core.Mode(
-    name = "MIPS2",
-    ks = None,
-    cs = capstone.CS_MODE_MIPS2,
-    uc = None
-)
-
-MOS65XX_65816_LONG_M = archist.core.Mode(
-    name = "MOS65XX_65816_LONG_M",
-    ks = None,
-    cs = capstone.CS_MODE_MOS65XX_65816_LONG_M,
-    uc = None
-)
-
-ARM = archist.core.Mode(
-    name = "ARM",
-    ks = keystone.KS_MODE_ARM,
-    cs = capstone.CS_MODE_ARM,
-    uc = unicorn.UC_MODE_ARM
-)
-
-SHDSP = archist.core.Mode(
-    name = "SHDSP",
-    ks = None,
-    cs = capstone.CS_MODE_SHDSP,
-    uc = None
-)
-
-TRICORE_131 = archist.core.Mode(
-    name = "TRICORE_131",
-    ks = None,
-    cs = capstone.CS_MODE_TRICORE_131,
-    uc = None
-)
-
-M680X_6805 = archist.core.Mode(
-    name = "M680X_6805",
-    ks = None,
-    cs = capstone.CS_MODE_M680X_6805,
-    uc = None
-)
-
-SH4A = archist.core.Mode(
-    name = "SH4A",
-    ks = None,
-    cs = capstone.CS_MODE_SH4A,
-    uc = None
-)
-
-ARM946 = archist.core.Mode(
-    name = "ARM946",
-    ks = None,
-    cs = None,
-    uc = unicorn.UC_MODE_ARM946
-)
-
 _32 = archist.core.Mode(
     name = "_32",
     ks = keystone.KS_MODE_32,
     cs = capstone.CS_MODE_32,
     uc = unicorn.UC_MODE_32
+)
+
+MIPS64 = archist.core.Mode(
+    name = "MIPS64",
+    ks = keystone.KS_MODE_MIPS64,
+    cs = capstone.CS_MODE_MIPS64,
+    uc = unicorn.UC_MODE_MIPS64
+)
+
+SH2 = archist.core.Mode(
+    name = "SH2",
+    ks = None,
+    cs = capstone.CS_MODE_SH2,
+    uc = None
 )
 
 MIPS3 = archist.core.Mode(
@@ -193,87 +60,31 @@ MIPS3 = archist.core.Mode(
     uc = unicorn.UC_MODE_MIPS3
 )
 
-QPX = archist.core.Mode(
-    name = "QPX",
-    ks = keystone.KS_MODE_QPX,
-    cs = capstone.CS_MODE_QPX,
-    uc = unicorn.UC_MODE_QPX
-)
-
-SPE = archist.core.Mode(
-    name = "SPE",
+M680X_6800 = archist.core.Mode(
+    name = "M680X_6800",
     ks = None,
-    cs = capstone.CS_MODE_SPE,
+    cs = capstone.CS_MODE_M680X_6800,
     uc = None
 )
 
-MOS65XX_65816_LONG_X = archist.core.Mode(
-    name = "MOS65XX_65816_LONG_X",
+RISCV32 = archist.core.Mode(
+    name = "RISCV32",
     ks = None,
-    cs = capstone.CS_MODE_MOS65XX_65816_LONG_X,
-    uc = None
+    cs = capstone.CS_MODE_RISCV32,
+    uc = unicorn.UC_MODE_RISCV32
 )
 
-_16 = archist.core.Mode(
-    name = "_16",
-    ks = keystone.KS_MODE_16,
-    cs = capstone.CS_MODE_16,
-    uc = unicorn.UC_MODE_16
-)
-
-MOS65XX_W65C02 = archist.core.Mode(
-    name = "MOS65XX_W65C02",
-    ks = None,
-    cs = capstone.CS_MODE_MOS65XX_W65C02,
-    uc = None
-)
-
-ARMBE8 = archist.core.Mode(
-    name = "ARMBE8",
-    ks = None,
-    cs = None,
-    uc = unicorn.UC_MODE_ARMBE8
-)
-
-M68K_010 = archist.core.Mode(
-    name = "M68K_010",
-    ks = None,
-    cs = capstone.CS_MODE_M68K_010,
-    uc = None
-)
-
-ARM926 = archist.core.Mode(
-    name = "ARM926",
-    ks = None,
-    cs = None,
-    uc = unicorn.UC_MODE_ARM926
-)
-
-BOOKE = archist.core.Mode(
-    name = "BOOKE",
-    ks = None,
-    cs = capstone.CS_MODE_BOOKE,
-    uc = None
-)
-
-SHFPU = archist.core.Mode(
-    name = "SHFPU",
-    ks = None,
-    cs = capstone.CS_MODE_SHFPU,
-    uc = None
+V9 = archist.core.Mode(
+    name = "V9",
+    ks = keystone.KS_MODE_V9,
+    cs = capstone.CS_MODE_V9,
+    uc = unicorn.UC_MODE_V9
 )
 
 M680X_6309 = archist.core.Mode(
     name = "M680X_6309",
     ks = None,
     cs = capstone.CS_MODE_M680X_6309,
-    uc = None
-)
-
-PS = archist.core.Mode(
-    name = "PS",
-    ks = None,
-    cs = capstone.CS_MODE_PS,
     uc = None
 )
 
@@ -284,32 +95,46 @@ MOS65XX_65816_LONG_MX = archist.core.Mode(
     uc = None
 )
 
-MIPS32R6 = archist.core.Mode(
-    name = "MIPS32R6",
-    ks = keystone.KS_MODE_MIPS32R6,
-    cs = capstone.CS_MODE_MIPS32R6,
-    uc = unicorn.UC_MODE_MIPS32R6
-)
-
-M68K_000 = archist.core.Mode(
-    name = "M68K_000",
+M680X_HCS08 = archist.core.Mode(
+    name = "M680X_HCS08",
     ks = None,
-    cs = capstone.CS_MODE_M68K_000,
+    cs = capstone.CS_MODE_M680X_HCS08,
     uc = None
 )
 
-M680X_6808 = archist.core.Mode(
-    name = "M680X_6808",
+V8 = archist.core.Mode(
+    name = "V8",
+    ks = keystone.KS_MODE_V8,
+    cs = capstone.CS_MODE_V8,
+    uc = unicorn.UC_MODE_V8
+)
+
+M68K_010 = archist.core.Mode(
+    name = "M68K_010",
     ks = None,
-    cs = capstone.CS_MODE_M680X_6808,
+    cs = capstone.CS_MODE_M68K_010,
     uc = None
 )
 
-SH4 = archist.core.Mode(
-    name = "SH4",
+PPC64 = archist.core.Mode(
+    name = "PPC64",
+    ks = keystone.KS_MODE_PPC64,
+    cs = None,
+    uc = unicorn.UC_MODE_PPC64
+)
+
+TRICORE_162 = archist.core.Mode(
+    name = "TRICORE_162",
     ks = None,
-    cs = capstone.CS_MODE_SH4,
+    cs = capstone.CS_MODE_TRICORE_162,
     uc = None
+)
+
+ARM946 = archist.core.Mode(
+    name = "ARM946",
+    ks = None,
+    cs = None,
+    uc = unicorn.UC_MODE_ARM946
 )
 
 MICRO = archist.core.Mode(
@@ -319,46 +144,88 @@ MICRO = archist.core.Mode(
     uc = unicorn.UC_MODE_MICRO
 )
 
-PPC32 = archist.core.Mode(
-    name = "PPC32",
-    ks = keystone.KS_MODE_PPC32,
+BPF_CLASSIC = archist.core.Mode(
+    name = "BPF_CLASSIC",
+    ks = None,
+    cs = capstone.CS_MODE_BPF_CLASSIC,
+    uc = None
+)
+
+ARMBE8 = archist.core.Mode(
+    name = "ARMBE8",
+    ks = None,
     cs = None,
-    uc = unicorn.UC_MODE_PPC32
+    uc = unicorn.UC_MODE_ARMBE8
 )
 
-V9 = archist.core.Mode(
-    name = "V9",
-    ks = keystone.KS_MODE_V9,
-    cs = capstone.CS_MODE_V9,
-    uc = unicorn.UC_MODE_V9
-)
-
-M680X_CPU12 = archist.core.Mode(
-    name = "M680X_CPU12",
+M680X_6811 = archist.core.Mode(
+    name = "M680X_6811",
     ks = None,
-    cs = capstone.CS_MODE_M680X_CPU12,
+    cs = capstone.CS_MODE_M680X_6811,
     uc = None
 )
 
-M680X_6801 = archist.core.Mode(
-    name = "M680X_6801",
+M68K_000 = archist.core.Mode(
+    name = "M68K_000",
     ks = None,
-    cs = capstone.CS_MODE_M680X_6801,
+    cs = capstone.CS_MODE_M68K_000,
     uc = None
 )
 
-M68K_030 = archist.core.Mode(
-    name = "M68K_030",
+BOOKE = archist.core.Mode(
+    name = "BOOKE",
     ks = None,
-    cs = capstone.CS_MODE_M68K_030,
+    cs = capstone.CS_MODE_BOOKE,
     uc = None
 )
 
-SPARC32 = archist.core.Mode(
-    name = "SPARC32",
-    ks = keystone.KS_MODE_SPARC32,
+MCLASS = archist.core.Mode(
+    name = "MCLASS",
+    ks = None,
+    cs = capstone.CS_MODE_MCLASS,
+    uc = unicorn.UC_MODE_MCLASS
+)
+
+MOS65XX_65816_LONG_M = archist.core.Mode(
+    name = "MOS65XX_65816_LONG_M",
+    ks = None,
+    cs = capstone.CS_MODE_MOS65XX_65816_LONG_M,
+    uc = None
+)
+
+M680X_6809 = archist.core.Mode(
+    name = "M680X_6809",
+    ks = None,
+    cs = capstone.CS_MODE_M680X_6809,
+    uc = None
+)
+
+SHFPU = archist.core.Mode(
+    name = "SHFPU",
+    ks = None,
+    cs = capstone.CS_MODE_SHFPU,
+    uc = None
+)
+
+ARM1176 = archist.core.Mode(
+    name = "ARM1176",
+    ks = None,
     cs = None,
-    uc = unicorn.UC_MODE_SPARC32
+    uc = unicorn.UC_MODE_ARM1176
+)
+
+ARM = archist.core.Mode(
+    name = "ARM",
+    ks = keystone.KS_MODE_ARM,
+    cs = capstone.CS_MODE_ARM,
+    uc = unicorn.UC_MODE_ARM
+)
+
+M68K_040 = archist.core.Mode(
+    name = "M68K_040",
+    ks = None,
+    cs = capstone.CS_MODE_M68K_040,
+    uc = None
 )
 
 TRICORE_130 = archist.core.Mode(
@@ -375,66 +242,10 @@ M680X_6301 = archist.core.Mode(
     uc = None
 )
 
-M68K_060 = archist.core.Mode(
-    name = "M68K_060",
+SH4A = archist.core.Mode(
+    name = "SH4A",
     ks = None,
-    cs = capstone.CS_MODE_M68K_060,
-    uc = None
-)
-
-TRICORE_161 = archist.core.Mode(
-    name = "TRICORE_161",
-    ks = None,
-    cs = capstone.CS_MODE_TRICORE_161,
-    uc = None
-)
-
-PPC64 = archist.core.Mode(
-    name = "PPC64",
-    ks = keystone.KS_MODE_PPC64,
-    cs = None,
-    uc = unicorn.UC_MODE_PPC64
-)
-
-M680X_6809 = archist.core.Mode(
-    name = "M680X_6809",
-    ks = None,
-    cs = capstone.CS_MODE_M680X_6809,
-    uc = None
-)
-
-M68K_040 = archist.core.Mode(
-    name = "M68K_040",
-    ks = None,
-    cs = capstone.CS_MODE_M68K_040,
-    uc = None
-)
-
-RISCVC = archist.core.Mode(
-    name = "RISCVC",
-    ks = None,
-    cs = capstone.CS_MODE_RISCVC,
-    uc = None
-)
-
-MOS65XX_65C02 = archist.core.Mode(
-    name = "MOS65XX_65C02",
-    ks = None,
-    cs = capstone.CS_MODE_MOS65XX_65C02,
-    uc = None
-)
-
-RISCV32 = archist.core.Mode(
-    name = "RISCV32",
-    ks = None,
-    cs = capstone.CS_MODE_RISCV32,
-    uc = unicorn.UC_MODE_RISCV32
-)
-
-SH2 = archist.core.Mode(
-    name = "SH2",
-    ks = None,
-    cs = capstone.CS_MODE_SH2,
+    cs = capstone.CS_MODE_SH4A,
     uc = None
 )
 
@@ -445,32 +256,193 @@ SH2A = archist.core.Mode(
     uc = None
 )
 
-THUMB = archist.core.Mode(
-    name = "THUMB",
-    ks = keystone.KS_MODE_THUMB,
-    cs = capstone.CS_MODE_THUMB,
-    uc = unicorn.UC_MODE_THUMB
-)
-
-V8 = archist.core.Mode(
-    name = "V8",
-    ks = keystone.KS_MODE_V8,
-    cs = capstone.CS_MODE_V8,
-    uc = unicorn.UC_MODE_V8
-)
-
-MIPS64 = archist.core.Mode(
-    name = "MIPS64",
-    ks = keystone.KS_MODE_MIPS64,
-    cs = capstone.CS_MODE_MIPS64,
-    uc = unicorn.UC_MODE_MIPS64
-)
-
-MCLASS = archist.core.Mode(
-    name = "MCLASS",
+M680X_6801 = archist.core.Mode(
+    name = "M680X_6801",
     ks = None,
-    cs = capstone.CS_MODE_MCLASS,
-    uc = unicorn.UC_MODE_MCLASS
+    cs = capstone.CS_MODE_M680X_6801,
+    uc = None
+)
+
+TRICORE_131 = archist.core.Mode(
+    name = "TRICORE_131",
+    ks = None,
+    cs = capstone.CS_MODE_TRICORE_131,
+    uc = None
+)
+
+_64 = archist.core.Mode(
+    name = "_64",
+    ks = keystone.KS_MODE_64,
+    cs = capstone.CS_MODE_64,
+    uc = unicorn.UC_MODE_64
+)
+
+SPARC32 = archist.core.Mode(
+    name = "SPARC32",
+    ks = keystone.KS_MODE_SPARC32,
+    cs = None,
+    uc = unicorn.UC_MODE_SPARC32
+)
+
+MOS65XX_65816 = archist.core.Mode(
+    name = "MOS65XX_65816",
+    ks = None,
+    cs = capstone.CS_MODE_MOS65XX_65816,
+    uc = None
+)
+
+TRICORE_161 = archist.core.Mode(
+    name = "TRICORE_161",
+    ks = None,
+    cs = capstone.CS_MODE_TRICORE_161,
+    uc = None
+)
+
+M68K_030 = archist.core.Mode(
+    name = "M68K_030",
+    ks = None,
+    cs = capstone.CS_MODE_M68K_030,
+    uc = None
+)
+
+SPARC64 = archist.core.Mode(
+    name = "SPARC64",
+    ks = keystone.KS_MODE_SPARC64,
+    cs = None,
+    uc = unicorn.UC_MODE_SPARC64
+)
+
+ARM926 = archist.core.Mode(
+    name = "ARM926",
+    ks = None,
+    cs = None,
+    uc = unicorn.UC_MODE_ARM926
+)
+
+BPF_EXTENDED = archist.core.Mode(
+    name = "BPF_EXTENDED",
+    ks = None,
+    cs = capstone.CS_MODE_BPF_EXTENDED,
+    uc = None
+)
+
+M680X_CPU12 = archist.core.Mode(
+    name = "M680X_CPU12",
+    ks = None,
+    cs = capstone.CS_MODE_M680X_CPU12,
+    uc = None
+)
+
+M68K_020 = archist.core.Mode(
+    name = "M68K_020",
+    ks = None,
+    cs = capstone.CS_MODE_M68K_020,
+    uc = None
+)
+
+PS = archist.core.Mode(
+    name = "PS",
+    ks = None,
+    cs = capstone.CS_MODE_PS,
+    uc = None
+)
+
+MOS65XX_65816_LONG_X = archist.core.Mode(
+    name = "MOS65XX_65816_LONG_X",
+    ks = None,
+    cs = capstone.CS_MODE_MOS65XX_65816_LONG_X,
+    uc = None
+)
+
+RISCVC = archist.core.Mode(
+    name = "RISCVC",
+    ks = None,
+    cs = capstone.CS_MODE_RISCVC,
+    uc = None
+)
+
+RISCV64 = archist.core.Mode(
+    name = "RISCV64",
+    ks = None,
+    cs = capstone.CS_MODE_RISCV64,
+    uc = unicorn.UC_MODE_RISCV64
+)
+
+SHDSP = archist.core.Mode(
+    name = "SHDSP",
+    ks = None,
+    cs = capstone.CS_MODE_SHDSP,
+    uc = None
+)
+
+MIPS2 = archist.core.Mode(
+    name = "MIPS2",
+    ks = None,
+    cs = capstone.CS_MODE_MIPS2,
+    uc = None
+)
+
+SPE = archist.core.Mode(
+    name = "SPE",
+    ks = None,
+    cs = capstone.CS_MODE_SPE,
+    uc = None
+)
+
+MIPS32 = archist.core.Mode(
+    name = "MIPS32",
+    ks = keystone.KS_MODE_MIPS32,
+    cs = capstone.CS_MODE_MIPS32,
+    uc = unicorn.UC_MODE_MIPS32
+)
+
+M680X_6808 = archist.core.Mode(
+    name = "M680X_6808",
+    ks = None,
+    cs = capstone.CS_MODE_M680X_6808,
+    uc = None
+)
+
+PPC32 = archist.core.Mode(
+    name = "PPC32",
+    ks = keystone.KS_MODE_PPC32,
+    cs = None,
+    uc = unicorn.UC_MODE_PPC32
+)
+
+MIPS32R6 = archist.core.Mode(
+    name = "MIPS32R6",
+    ks = keystone.KS_MODE_MIPS32R6,
+    cs = capstone.CS_MODE_MIPS32R6,
+    uc = unicorn.UC_MODE_MIPS32R6
+)
+
+MOS65XX_6502 = archist.core.Mode(
+    name = "MOS65XX_6502",
+    ks = None,
+    cs = capstone.CS_MODE_MOS65XX_6502,
+    uc = None
+)
+
+SH3 = archist.core.Mode(
+    name = "SH3",
+    ks = None,
+    cs = capstone.CS_MODE_SH3,
+    uc = None
+)
+
+MOS65XX_W65C02 = archist.core.Mode(
+    name = "MOS65XX_W65C02",
+    ks = None,
+    cs = capstone.CS_MODE_MOS65XX_W65C02,
+    uc = None
+)
+
+M68K_060 = archist.core.Mode(
+    name = "M68K_060",
+    ks = None,
+    cs = capstone.CS_MODE_M68K_060,
+    uc = None
 )
 
 TRICORE_160 = archist.core.Mode(
@@ -480,18 +452,46 @@ TRICORE_160 = archist.core.Mode(
     uc = None
 )
 
-M680X_6800 = archist.core.Mode(
-    name = "M680X_6800",
+THUMB = archist.core.Mode(
+    name = "THUMB",
+    ks = keystone.KS_MODE_THUMB,
+    cs = capstone.CS_MODE_THUMB,
+    uc = unicorn.UC_MODE_THUMB
+)
+
+TRICORE_120 = archist.core.Mode(
+    name = "TRICORE_120",
     ks = None,
-    cs = capstone.CS_MODE_M680X_6800,
+    cs = capstone.CS_MODE_TRICORE_120,
     uc = None
 )
 
-ARM1176 = archist.core.Mode(
-    name = "ARM1176",
+MOS65XX_65C02 = archist.core.Mode(
+    name = "MOS65XX_65C02",
     ks = None,
-    cs = None,
-    uc = unicorn.UC_MODE_ARM1176
+    cs = capstone.CS_MODE_MOS65XX_65C02,
+    uc = None
 )
 
-ALL_MODES = [M680X_HCS08, MIPS32, SH3, M68K_020, TRICORE_162, RISCV64, BPF_CLASSIC, SPARC64, TRICORE_110, _64, MOS65XX_6502, BPF_EXTENDED, MOS65XX_65816, TRICORE_120, M680X_6811, MIPS2, MOS65XX_65816_LONG_M, ARM, SHDSP, TRICORE_131, M680X_6805, SH4A, ARM946, _32, MIPS3, QPX, SPE, MOS65XX_65816_LONG_X, _16, MOS65XX_W65C02, ARMBE8, M68K_010, ARM926, BOOKE, SHFPU, M680X_6309, PS, MOS65XX_65816_LONG_MX, MIPS32R6, M68K_000, M680X_6808, SH4, MICRO, PPC32, V9, M680X_CPU12, M680X_6801, M68K_030, SPARC32, TRICORE_130, M680X_6301, M68K_060, TRICORE_161, PPC64, M680X_6809, M68K_040, RISCVC, MOS65XX_65C02, RISCV32, SH2, SH2A, THUMB, V8, MIPS64, MCLASS, TRICORE_160, M680X_6800, ARM1176]
+SH4 = archist.core.Mode(
+    name = "SH4",
+    ks = None,
+    cs = capstone.CS_MODE_SH4,
+    uc = None
+)
+
+M680X_6805 = archist.core.Mode(
+    name = "M680X_6805",
+    ks = None,
+    cs = capstone.CS_MODE_M680X_6805,
+    uc = None
+)
+
+_16 = archist.core.Mode(
+    name = "_16",
+    ks = keystone.KS_MODE_16,
+    cs = capstone.CS_MODE_16,
+    uc = unicorn.UC_MODE_16
+)
+
+ALL_MODES = [QPX, TRICORE_110, _32, MIPS64, SH2, MIPS3, M680X_6800, RISCV32, V9, M680X_6309, MOS65XX_65816_LONG_MX, M680X_HCS08, V8, M68K_010, PPC64, TRICORE_162, ARM946, MICRO, BPF_CLASSIC, ARMBE8, M680X_6811, M68K_000, BOOKE, MCLASS, MOS65XX_65816_LONG_M, M680X_6809, SHFPU, ARM1176, ARM, M68K_040, TRICORE_130, M680X_6301, SH4A, SH2A, M680X_6801, TRICORE_131, _64, SPARC32, MOS65XX_65816, TRICORE_161, M68K_030, SPARC64, ARM926, BPF_EXTENDED, M680X_CPU12, M68K_020, PS, MOS65XX_65816_LONG_X, RISCVC, RISCV64, SHDSP, MIPS2, SPE, MIPS32, M680X_6808, PPC32, MIPS32R6, MOS65XX_6502, SH3, MOS65XX_W65C02, M68K_060, TRICORE_160, THUMB, TRICORE_120, MOS65XX_65C02, SH4, M680X_6805, _16]

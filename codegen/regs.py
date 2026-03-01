@@ -6,7 +6,7 @@ import logging
 import importlib
 import importlib.util
 
-from util import getattr_regex
+from utils import getattr_regex
 
 logger = logging.getLogger(__file__)
 

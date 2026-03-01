@@ -21,17 +21,17 @@ class {{ a.name }}(archist.core.Arch):
 
 {% if a.ks != "None" %}
     @classmethod
-    {% set class_name = "Ks" %}{% include 'wrapper_args.py.jinja' %}
+    {% set lib = namespace(name="keystone", class_name="Ks") %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.cs != "None" %}
     @classmethod
-    {% set class_name = "Cs" %}{% include 'wrapper_args.py.jinja' %}
+    {% set lib = namespace(name="capstone", class_name="Cs") %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.uc != "None" %}
     @classmethod
-    {% set class_name = "Uc" %}{% include 'wrapper_args.py.jinja' %}
+    {% set lib = namespace(name="unicorn", class_name="Uc") %}{% include 'wrapper_args.py.jinja' %}
 {% endif %}
 
 {% if a.modes | length > 0 %}

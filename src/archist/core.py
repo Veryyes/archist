@@ -43,8 +43,8 @@ assert (
 LITTLE_ENDIAN = Endian(
     name="little",
     ks=keystone.KS_MODE_LITTLE_ENDIAN,
-    cs=keystone.KS_MODE_LITTLE_ENDIAN,
-    uc=keystone.KS_MODE_LITTLE_ENDIAN,
+    cs=capstone.CS_MODE_LITTLE_ENDIAN,
+    uc=unicorn.UC_MODE_LITTLE_ENDIAN,
     ql=qiling.const.QL_ENDIAN.EL,
 )
 
@@ -82,7 +82,6 @@ class Arch(pydantic.BaseModel):
         if isinstance(mode, int) or (isinstance(mode, str) and mode.isdigit()):
             mode = f"_{mode}"
 
-        assert isinstance(mode, str)
         mode = mode.lower()
 
         found = getattr(cls.Modes, mode, None)
@@ -169,11 +168,6 @@ class Arch(pydantic.BaseModel):
                 ],
             ),
         )
-
-    # @classmethod
-    # def Ks_pyelftools(cls, elf: elftools.elf.elffile.ELFFile) -> keystone.Ks:
-    #     arch, endian = cls._from_pyelftools(elf)
-    #     arch._Ks(endian=endian)
 
     @classmethod
     def modes(cls) -> typing.List[Mode]:
