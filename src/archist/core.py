@@ -1,16 +1,17 @@
 import enum
 import typing
+import dataclasses
 import functools
 import operator
 
-import pydantic
 import keystone
 import capstone
 import unicorn
 import qiling.const
 
 
-class Common(pydantic.BaseModel):
+@dataclasses.dataclass
+class Common:
     name: str
     ks: int | None
     cs: int | None
@@ -18,6 +19,7 @@ class Common(pydantic.BaseModel):
     ql: enum.IntEnum | None
 
 
+@dataclasses.dataclass
 class Endian(Common):
     ql: qiling.const.QL_ENDIAN | None
 
@@ -49,7 +51,8 @@ LITTLE_ENDIAN = Endian(
 )
 
 
-class Mode(pydantic.BaseModel):
+@dataclasses.dataclass
+class Mode:
     name: str
     ks: int | None
     cs: int | None
@@ -62,7 +65,7 @@ class Mode(pydantic.BaseModel):
 NO_MODES = Mode(name="N/A", ks=0, cs=0, uc=0)
 
 
-class Arch(pydantic.BaseModel):
+class Arch:
     name: typing.ClassVar[str]
     ks: typing.ClassVar[int | None]
     cs: typing.ClassVar[int | None]

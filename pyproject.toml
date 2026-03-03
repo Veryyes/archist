@@ -28,7 +28,6 @@ dependencies = [
     "capstone",
     "unicorn",
     "qiling",
-    "pydantic",
     "lief",
     "pyelftools",
     "pyghidra"
