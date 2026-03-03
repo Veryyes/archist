@@ -1,0 +1,21 @@
+{% include "autogen_warning.jinja" %}
+
+'''Different Modes Collated'''
+import capstone
+import keystone
+import unicorn
+
+import archist.core
+
+###############################
+# ARCHITECTURE MODES/VARIANTS #
+###############################
+{% for m in modes.values() %}
+{{ m.name }} = archist.core.Mode(
+    name = "{{ m.name }}",
+    ks = {{ m.ks }},
+    cs = {{ m.cs }},
+    uc = {{ m.uc }}
+)
+{% endfor %}
+ALL_MODES = [{{ modes.keys() |  join(", ") }}]

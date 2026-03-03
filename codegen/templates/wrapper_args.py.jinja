@@ -1,0 +1,13 @@
+def {{ lib.class_name }}(
+        cls,
+        endian:archist.core.Endian|str = archist.core.LITTLE_ENDIAN,
+        {% if a.all_mode_aliases(lib.class_name) | length > 0 %}mode:archist.core.Mode | typing.Literal[{{ a.all_mode_aliases(lib.class_name) | join(",") }}] = archist.core.NO_MODES,{% endif %}
+        {% for m in a[lib.class_name.lower() ~ "_modifiers"] %}{{ m.name | lower }}:bool = False,
+        {% endfor %}
+    ) -> {{ lib.name }}.{{ lib.class_name }}:
+        return cls._{{ lib.class_name }}(
+            mode{% if a.all_mode_aliases(lib.class_name) | length != 0 %}=mode{% else %}=archist.core.NO_MODES{% endif %},
+            endian=endian,
+            {% for m in a[lib.class_name.lower() ~ "_modifiers"] %}{{ m.name | lower }} = {{ m.name | lower }},
+            {% endfor %}
+        )
