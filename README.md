@@ -35,6 +35,31 @@ ql = Qiling(
 uc.reg_write(UC_X86_REG_EAX, 0xdeadbeef)
 ```
 
+Sometimes certain combination of modes are invalid and its not obvious why. Lack of support or not an actual valid combination?
+```python
+from unicorn import *
+
+# Only BE support for TRICORE
+Uc(UC_ARCH_TRICORE, UC_MODE_LITTLE_ENDIAN)  # Works
+Uc(UC_ARCH_TRICORE, UC_MODE_BIG_ENDIAN)     # unicorn.unicorn_py3.unicorn.UcError: Invalid mode (UC_ERR_MODE)
+
+# UC_MODE_32 is actully only meant for usage with UC_ARCH_X86
+# For PPC is UC_MODE_PPC and for MIPS its UC_MODE_MIPS32, go figure...
+Uc(UC_ARCH_PPC, UC_MODE_32) # unicorn.unicorn_py3.unicorn.UcError: Invalid mode (UC_ERR_MODE)
+Uc(UC_ARCH_PPC, UC_MODE_PPC32) # unicorn.unicorn_py3.unicorn.UcError: Invalid mode (UC_ERR_MODE)
+Uc(UC_ARCH_PPC, UC_MODE_PPC32 | UC_MODE_BIG_ENDIAN) # Works - Only BE support for 32 bit PPC
+
+from keystone import *
+
+# So redundant. If I am using ARM, I need to specify ARM mode?
+Ks(KS_ARCH_ARM, KS_MODE_ARM)
+
+# Can't specify just V8 on its own
+Ks(KS_ARCH_ARM, KS_MODE_V8) # keystone.keystone.KsError: Invalid mode (KS_ERR_MODE)
+Ks(KS_ARCH_ARM, KS_MODE_V8 | KS_MODE_ARM) # Works
+Ks(KS_ARCH_ARM, KS_MODE_V8 | KS_MODE_THUMB) # Works
+```
+
 Though constant values are not expected to be consistent across different libraries, these are all written by the same author and hold the same style of code. So, you may want to believe consts would have some sort of consistency across each library:
 ```python
 >>> CS_ARCH_X86
@@ -47,11 +72,11 @@ Though constant values are not expected to be consistent across different librar
 <QL_ARCH.X86: 101>
 ```
 
-All these enums that represent the information about each architecture. There should just be a single interface for this.
+Wouldn't it be nice if there was just a single interface for this.
 
 # Archist
 
-Archist is a convenience library that maps all of these consts/enums together into a single intuitive class per architecture, such that you only need to import and use a single python object. Since a large part of the code base is generated and statically defines relationships between architectures and their properties, IDEs can autocomplete and static type checkers actually understand parts of the code base. Qiling, for example, dynamically maps in values (e.g. `ql.arch.Regs.eax`), so most static type checkers would reason the type of that value to be `typing.Any`. 
+Archist is a convenience library that maps all of these consts/enums together into a single intuitive class per architecture, such that you only need to import and use a single python object. Since a large part of the code base is generated and statically defines relationships between architectures and their properties, IDEs can autocomplete and static type checkers actually understand parts of the code base. This also means all supported modes for a given architecture for one of the given libraries and be declared in the type hinting. Qiling, for example, dynamically maps in values (e.g. `ql.arch.Regs.eax`), so most static type checkers would reason the type of that value to be `typing.Any`. 
 
 I also personally find it annoying to import and use a crap ton of constant values like C-style preprocessor `#define`s when writing python code.
 
@@ -61,7 +86,7 @@ The above example would become this with Archist:
 from qiling import Qiling
 from qiling.const import QL_OS
 
-from archist import X86
+from archist import X86, ARM
 
 cs = ARM.Cs(mode="thumb", endian="big")
 ks = X86.Ks(mode=32)
