@@ -187,8 +187,8 @@ class TestPPCCs:
     @pytest.mark.parametrize(
         "mode_name",
         [
-            "qpx",
-            "ps",
+            "32",
+            "64",
         ],
     )
     def test_mode_string(self, mode_name):
@@ -199,12 +199,16 @@ class TestPPCCs:
         cs = PPC.Cs()
         assert cs is not None
 
-    def test_mode_64_string(self):
-        cs = PPC.Cs(mode="64")
-        assert cs is not None
-
     def test_mode_64_int(self):
         cs = PPC.Cs(mode=64)
+        assert cs is not None
+
+    def test_qpx(self):
+        cs = PPC.Cs(mode=32, qpx=True)
+        assert cs is not None
+
+    def test_ps(self):
+        cs = PPC.Cs(mode=32, ps=True)
         assert cs is not None
 
 

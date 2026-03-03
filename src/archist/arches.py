@@ -70,18 +70,16 @@ class ARM(archist.core.Arch):
         | typing.Literal[
             "arm", "arm1176", "arm926", "arm946", "armbe8", "mclass", "thumb"
         ] = archist.core.NO_MODES,
-        v8: bool = False,
     ) -> unicorn.Uc:
         return cls._Uc(
             mode=mode,
             endian=endian,
-            v8=v8,
         )
 
     class Modes:
-        armbe8 = archist.modes.ARMBE8
-        arm946 = archist.modes.ARM946
         arm926 = archist.modes.ARM926
+        arm946 = archist.modes.ARM946
+        armbe8 = archist.modes.ARMBE8
         arm = archist.modes.ARM
         arm1176 = archist.modes.ARM1176
         thumb = archist.modes.THUMB
@@ -687,16 +685,16 @@ class M680X(archist.core.Arch):
         )
 
     class Modes:
-        m680x_6811 = archist.modes.M680X_6811
+        m680x_6808 = archist.modes.M680X_6808
         m680x_6309 = archist.modes.M680X_6309
-        m680x_6809 = archist.modes.M680X_6809
-        m680x_cpu12 = archist.modes.M680X_CPU12
         m680x_6805 = archist.modes.M680X_6805
         m680x_6301 = archist.modes.M680X_6301
-        m680x_6800 = archist.modes.M680X_6800
-        m680x_6808 = archist.modes.M680X_6808
         m680x_hcs08 = archist.modes.M680X_HCS08
+        m680x_6800 = archist.modes.M680X_6800
+        m680x_cpu12 = archist.modes.M680X_CPU12
         m680x_6801 = archist.modes.M680X_6801
+        m680x_6811 = archist.modes.M680X_6811
+        m680x_6809 = archist.modes.M680X_6809
 
 
 class M68K(archist.core.Arch):
@@ -731,12 +729,12 @@ class M68K(archist.core.Arch):
         )
 
     class Modes:
-        m68k_040 = archist.modes.M68K_040
-        m68k_060 = archist.modes.M68K_060
-        m68k_030 = archist.modes.M68K_030
         m68k_000 = archist.modes.M68K_000
+        m68k_030 = archist.modes.M68K_030
+        m68k_040 = archist.modes.M68K_040
         m68k_010 = archist.modes.M68K_010
         m68k_020 = archist.modes.M68K_020
+        m68k_060 = archist.modes.M68K_060
 
     class Regs:
         a0 = unicorn.m68k_const.UC_M68K_REG_A0
@@ -827,18 +825,10 @@ class MIPS(archist.core.Arch):
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
         | typing.Literal["mips32", "mips64"] = archist.core.NO_MODES,
-        micro: bool = False,
-        mips2: bool = False,
-        mips3: bool = False,
-        mips32r6: bool = False,
     ) -> keystone.Ks:
         return cls._Ks(
             mode=mode,
             endian=endian,
-            micro=micro,
-            mips2=mips2,
-            mips3=mips3,
-            mips32r6=mips32r6,
         )
 
     @classmethod
@@ -867,26 +857,18 @@ class MIPS(archist.core.Arch):
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
         | typing.Literal["mips32", "mips64"] = archist.core.NO_MODES,
-        micro: bool = False,
-        mips2: bool = False,
-        mips3: bool = False,
-        mips32r6: bool = False,
     ) -> unicorn.Uc:
         return cls._Uc(
             mode=mode,
             endian=endian,
-            micro=micro,
-            mips2=mips2,
-            mips3=mips3,
-            mips32r6=mips32r6,
         )
 
     class Modes:
-        mips2 = archist.modes.MIPS2
-        mips64 = archist.modes.MIPS64
-        mips32 = archist.modes.MIPS32
-        mips3 = archist.modes.MIPS3
         mips32r6 = archist.modes.MIPS32R6
+        mips2 = archist.modes.MIPS2
+        mips32 = archist.modes.MIPS32
+        mips64 = archist.modes.MIPS64
+        mips3 = archist.modes.MIPS3
         micro = archist.modes.MICRO
 
     class Regs:
@@ -1071,12 +1053,13 @@ class MOS65XX(archist.core.Arch):
         )
 
     class Modes:
+        mos65xx_65c02 = archist.modes.MOS65XX_65C02
+        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
         mos65xx_65816_long_m = archist.modes.MOS65XX_65816_LONG_M
+        mos65xx_65816 = archist.modes.MOS65XX_65816
+        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
         mos65xx_6502 = archist.modes.MOS65XX_6502
         mos65xx_65816_long_mx = archist.modes.MOS65XX_65816_LONG_MX
-        mos65xx_65c02 = archist.modes.MOS65XX_65C02
-        mos65xx_w65c02 = archist.modes.MOS65XX_W65C02
-        mos65xx_65816_long_x = archist.modes.MOS65XX_65816_LONG_X
 
 
 class PPC(archist.core.Arch):
@@ -1091,7 +1074,7 @@ class PPC(archist.core.Arch):
         cls,
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
-        | typing.Literal[64, "64", "ppc32", "ppc64"] = archist.core.NO_MODES,
+        | typing.Literal[32, 64, "32", "64", "ppc32", "ppc64"] = archist.core.NO_MODES,
     ) -> keystone.Ks:
         return cls._Ks(
             mode=mode,
@@ -1103,11 +1086,15 @@ class PPC(archist.core.Arch):
         cls,
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
-        | typing.Literal[64, "64", "ps", "qpx"] = archist.core.NO_MODES,
+        | typing.Literal[32, 64, "32", "64"] = archist.core.NO_MODES,
+        qpx: bool = False,
+        ps: bool = False,
     ) -> capstone.Cs:
         return cls._Cs(
             mode=mode,
             endian=endian,
+            qpx=qpx,
+            ps=ps,
         )
 
     @classmethod
@@ -1115,7 +1102,7 @@ class PPC(archist.core.Arch):
         cls,
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
-        | typing.Literal[64, "64", "ppc32", "ppc64"] = archist.core.NO_MODES,
+        | typing.Literal[32, 64, "32", "64", "ppc32", "ppc64"] = archist.core.NO_MODES,
     ) -> unicorn.Uc:
         return cls._Uc(
             mode=mode,
@@ -1123,9 +1110,10 @@ class PPC(archist.core.Arch):
         )
 
     class Modes:
-        ppc64 = archist.modes.PPC64
         ppc32 = archist.modes.PPC32
+        ppc64 = archist.modes.PPC64
         _64 = archist.modes._64
+        _32 = archist.modes._32
         qpx = archist.modes.QPX
         ps = archist.modes.PS
 
@@ -1245,8 +1233,8 @@ class RISCV(archist.core.Arch):
         )
 
     class Modes:
-        riscvc = archist.modes.RISCVC
         riscv64 = archist.modes.RISCV64
+        riscvc = archist.modes.RISCVC
         riscv32 = archist.modes.RISCV32
 
     class Regs:
@@ -1680,13 +1668,13 @@ class SH(archist.core.Arch):
         )
 
     class Modes:
-        sh3 = archist.modes.SH3
+        sh2a = archist.modes.SH2A
+        sh4 = archist.modes.SH4
         shfpu = archist.modes.SHFPU
         shdsp = archist.modes.SHDSP
-        sh4 = archist.modes.SH4
-        sh4a = archist.modes.SH4A
         sh2 = archist.modes.SH2
-        sh2a = archist.modes.SH2A
+        sh3 = archist.modes.SH3
+        sh4a = archist.modes.SH4A
 
 
 class SPARC(archist.core.Arch):
@@ -1728,17 +1716,15 @@ class SPARC(archist.core.Arch):
         endian: archist.core.Endian | str = archist.core.LITTLE_ENDIAN,
         mode: archist.core.Mode
         | typing.Literal["sparc32", "sparc64"] = archist.core.NO_MODES,
-        v9: bool = False,
     ) -> unicorn.Uc:
         return cls._Uc(
             mode=mode,
             endian=endian,
-            v9=v9,
         )
 
     class Modes:
-        sparc32 = archist.modes.SPARC32
         sparc64 = archist.modes.SPARC64
+        sparc32 = archist.modes.SPARC32
         v9 = archist.modes.V9
 
     class Regs:
@@ -1929,12 +1915,12 @@ class TRICORE(archist.core.Arch):
         )
 
     class Modes:
-        tricore_130 = archist.modes.TRICORE_130
         tricore_162 = archist.modes.TRICORE_162
+        tricore_161 = archist.modes.TRICORE_161
         tricore_131 = archist.modes.TRICORE_131
         tricore_160 = archist.modes.TRICORE_160
         tricore_120 = archist.modes.TRICORE_120
-        tricore_161 = archist.modes.TRICORE_161
+        tricore_130 = archist.modes.TRICORE_130
         tricore_110 = archist.modes.TRICORE_110
 
     class Regs:

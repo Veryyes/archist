@@ -32,6 +32,9 @@ class ModeTemplate:
     uc: str
     aliases: typing.List[str | int] = dataclasses.field(default_factory=list)
 
+    def __hash__(self) -> int:
+        return hash(self.name)
+
 
 @dataclasses.dataclass
 class ArchTemplate:
@@ -42,13 +45,19 @@ class ArchTemplate:
     ql: str
     registers: typing.List[str]
     modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+
     # These are modes that can be used standalone and are converted to boolean keyword parameters
-    # TODO create ks/cs/uc specific modifiers
-    modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    ks_modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    cs_modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+    uc_modifiers: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
 
     ks_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
     cs_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
     uc_modes: typing.List[ModeTemplate] = dataclasses.field(default_factory=list)
+
+    @property
+    def modifiers(self) -> typing.Iterable[ModeTemplate]:
+        return set(self.ks_modifiers + self.cs_modifiers + self.uc_modifiers)
 
     def all_mode_aliases(self, lib: ConstructorName) -> typing.Set[str]:
         """
@@ -222,11 +231,13 @@ def special_cases(
 
         if name == "ARM":
             a.modes += [modes["THUMB"], modes["MCLASS"], modes["V8"]]
-            a.modifiers.append(modes["V8"])
+            a.ks_modifiers.append(modes["V8"])
+            a.cs_modifiers.append(modes["V8"])
+            # V8 mode is invalid for unicorn
 
         if name == "MIPS":
             a.modes.append(modes["MICRO"])
-            a.modifiers += [
+            a.cs_modifiers += [
                 modes["MICRO"],
                 modes["MIPS2"],
                 modes["MIPS3"],
@@ -235,17 +246,21 @@ def special_cases(
 
         if name == "SPARC":
             a.modes.append(modes["V9"])
-            a.modifiers.append(modes["V9"])
+            a.ks_modifiers.append(modes["V9"])
+            a.cs_modifiers.append(modes["V9"])
 
         if name == "PPC":
+            a.modes += [modes["_32"], modes["QPX"], modes["PS"]]
             # NOTE
             # modes["SPE"] and modes["BOOKE"] are omitted from this list because it is an invalid mode.
             # Appears to be another capstone bug or something that hasnt made its way to the latest release?
-            a.modes += [modes["QPX"], modes["PS"]]
+            a.cs_modifiers += [modes["QPX"], modes["PS"]]
 
         if name == "MOS65XX":
             # NOTE
             # Claude says this being an invalid mode in capstone is a bug. Trying to use this will result in a CS_ERR_MODE
-            a.modes.remove(modes["MOS65XX_65816"])
+            # These handlers are additive, so we cant remove it if it isnt there, but that's how im documenting this exception
+            # a.cs_modifiers.remove(modes["MOS65XX_65816"])
+            pass
 
     return arches
