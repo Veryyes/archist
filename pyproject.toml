@@ -44,6 +44,9 @@ dev = [
     "ghidra-stubs",
 ]
 
+[tool.hatch.build.targets.sdist]
+exclude = [".claude/"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/archist"]
 
