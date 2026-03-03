@@ -35,10 +35,10 @@ class TestARMUc:
         uc = ARM.Uc(mode="mclass")
         assert uc is not None
 
-    def test_mode_v8(self):
-        # UC_MODE_V8 is not supported by Unicorn for ARM — kwarg accepted but untestable
-        uc = ARM.Uc(mode="arm")
-        assert uc is not None
+    def test_v8_not_in_uc_api(self):
+        # v8 is not a valid modifier for Unicorn ARM — not in ARM.Uc() signature
+        with pytest.raises(TypeError):
+            ARM.Uc(mode="arm", v8=True)
 
     def test_mode_arm1176(self):
         uc = ARM.Uc(mode="arm1176")
@@ -91,25 +91,25 @@ class TestMIPSUc:
         uc = MIPS.Uc(mode=MIPS.Modes.mips32)
         assert uc is not None
 
-    def test_micro(self):
-        # UC_MODE_MICRO is not supported by Unicorn for MIPS — kwarg accepted but untestable
-        uc = MIPS.Uc(mode="mips32")
-        assert uc is not None
+    def test_micro_not_in_uc_api(self):
+        # micro is not a valid modifier for Unicorn MIPS — not in MIPS.Uc() signature
+        with pytest.raises(TypeError):
+            MIPS.Uc(mode="mips32", micro=True)
 
-    def test_mips2(self):
-        # UC_MODE_MIPS2 does not exist in Unicorn — kwarg accepted but untestable
-        uc = MIPS.Uc(mode="mips32")
-        assert uc is not None
+    def test_mips2_not_in_uc_api(self):
+        # mips2 (UC_MODE_MIPS2) does not exist in Unicorn — not in MIPS.Uc() signature
+        with pytest.raises(TypeError):
+            MIPS.Uc(mode="mips32", mips2=True)
 
-    def test_mips3(self):
-        # UC_MODE_MIPS3 is not supported by Unicorn for MIPS — kwarg accepted but untestable
-        uc = MIPS.Uc(mode="mips32")
-        assert uc is not None
+    def test_mips3_not_in_uc_api(self):
+        # mips3 is not a valid modifier for Unicorn MIPS — not in MIPS.Uc() signature
+        with pytest.raises(TypeError):
+            MIPS.Uc(mode="mips32", mips3=True)
 
-    def test_mips32r6(self):
-        # UC_MODE_MIPS32R6 is not supported by Unicorn for MIPS — kwarg accepted but untestable
-        uc = MIPS.Uc(mode="mips32")
-        assert uc is not None
+    def test_mips32r6_not_in_uc_api(self):
+        # mips32r6 is not a valid modifier for Unicorn MIPS — not in MIPS.Uc() signature
+        with pytest.raises(TypeError):
+            MIPS.Uc(mode="mips32", mips32r6=True)
 
 
 # ---- PPC ----
@@ -176,10 +176,10 @@ class TestSPARCUc:
         uc = SPARC.Uc(mode=SPARC.Modes.sparc32, endian="big")
         assert uc is not None
 
-    def test_v9(self):
-        # UC_MODE_V9 is not supported by Unicorn for SPARC — kwarg accepted but untestable
-        uc = SPARC.Uc(mode="sparc32", endian="big")
-        assert uc is not None
+    def test_v9_not_in_uc_api(self):
+        # v9 is not a valid modifier for Unicorn SPARC — not in SPARC.Uc() signature
+        with pytest.raises(TypeError):
+            SPARC.Uc(mode="sparc32", endian="big", v9=True)
 
 
 # ---- TRICORE ----

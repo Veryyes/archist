@@ -1,5 +1,6 @@
 """Tests for Keystone wrapper (.Ks()) creation on all architecture classes."""
 
+import pytest
 import keystone
 
 from archist import (
@@ -58,20 +59,20 @@ class TestMIPSKs:
         ks = MIPS.Ks(mode=MIPS.Modes.mips32)
         assert ks is not None
 
-    def test_micro(self):
-        # KS_MODE_MICRO is not supported by Keystone for MIPS — kwarg accepted but untestable
-        ks = MIPS.Ks(mode="mips32")
-        assert ks is not None
+    def test_micro_not_in_ks_api(self):
+        # micro is not a valid modifier for Keystone MIPS — not in MIPS.Ks() signature
+        with pytest.raises(TypeError):
+            MIPS.Ks(mode="mips32", micro=True)
 
-    def test_mips3(self):
-        # KS_MODE_MIPS3 is not supported by Keystone for MIPS — kwarg accepted but untestable
-        ks = MIPS.Ks(mode="mips32")
-        assert ks is not None
+    def test_mips3_not_in_ks_api(self):
+        # mips3 is not a valid modifier for Keystone MIPS — not in MIPS.Ks() signature
+        with pytest.raises(TypeError):
+            MIPS.Ks(mode="mips32", mips3=True)
 
-    def test_mips32r6(self):
-        # KS_MODE_MIPS32R6 is not supported by Keystone for MIPS — kwarg accepted but untestable
-        ks = MIPS.Ks(mode="mips32")
-        assert ks is not None
+    def test_mips32r6_not_in_ks_api(self):
+        # mips32r6 is not a valid modifier for Keystone MIPS — not in MIPS.Ks() signature
+        with pytest.raises(TypeError):
+            MIPS.Ks(mode="mips32", mips32r6=True)
 
 
 # ---- PPC ----

@@ -205,11 +205,11 @@ class TestPPCCs:
 
     def test_qpx(self):
         cs = PPC.Cs(mode=32, qpx=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_QPX
 
     def test_ps(self):
         cs = PPC.Cs(mode=32, ps=True)
-        assert cs is not None
+        assert cs.mode & capstone.CS_MODE_PS
 
 
 # ---- RISCV ----
